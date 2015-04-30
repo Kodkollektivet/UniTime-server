@@ -1,0 +1,51 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}Lnu times{% endblock title %}</title>
+    <script src="{% static 'timeedit/js/jquery.2.1.3.min.js' %}"></script>
+    <script src="{% static 'timeedit/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'timeedit/js/jquery-ui.min.js' %}"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/jquery-ui.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/core.css' %}">
+</head>
+<body>
+
+<div class="data">
+{% if course %}
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" align="center">
+{{ course.course_code }}
+    {{ course.season }}
+    {{ course.html_url }}
+    {{ course.year }}
+</div>
+{% endif %}
+
+{% if events %}
+{% for e in events %}
+<div class="row">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"></div>
+        <div class="col-xs-12 col-sm-12 col-md-2 col-lg-2" align="center">
+            <div class="well">
+                {{ e.info }}<br>
+                {{ e.startdate }}<br>
+                {{ e.starttime }} - {{ e.endtime }}</br>
+                {{ e.room }}<br>
+                {{ e.teacher }}<br>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5"></div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+</div>
+
+
+</body>
+</html>
