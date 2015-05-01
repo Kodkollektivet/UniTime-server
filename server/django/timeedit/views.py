@@ -22,8 +22,12 @@ class IndexView(generic.View):
             try:
                 course = Course.objects.get(course_code=course_post)
             except Course.DoesNotExist as e:
-                course = Course(**getCourseInfo(course_post))
-                course.save()
+                try:
+                    course = Course(**getCourseInfo(course_post))
+                    course.save()
+                except TypeError as e:
+                    print(e)
+                    return render(request, 'timeedit/index.html', {'form':form, 'message':'Sorry, cant handle your request! A codemonkey will be slayed for that!'})
                 
             return render(request,
                           'timeedit/event.html',

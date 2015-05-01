@@ -49,82 +49,77 @@ def getCourseEvents(season, year, course_anmalningskod):
         json_data = json.loads(connection.getresponse().read())
 
         # Pretty print it, only use thins when looking for all data
-        #pp = pprint.PrettyPrinter(indent=4)
-        #pp.pprint(json_data['reservations'])
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(json_data['messages'])
 
         event_list = []
-        
-        for i in json_data['reservations']:
+        try:
+            json_data['messages']
+        except KeyError as e:
+            pass
 
-            data = {
-                'startdate':'',
-                'starttime':'',
-                'endtime':'',
-                'info':'',
-                'room':'',
-                'teacher':'',
-            }
-            
-            data['startdate'] = i['startdate']
-            data['starttime'] = i['starttime']
-            data['endtime'] = i['endtime']
-            data['info'] = i['columns'][5]
-            data['room'] = i['columns'][2]
-            data['teacher'] = i['columns'][3]                            
-            event_list.append(data)
-            
-        return event_list
+        try:
+            for i in json_data['reservations']:
+
+                data = {
+                    'startdate':'',
+                    'starttime':'',
+                    'endtime':'',
+                    'info':'',
+                    'room':'',
+                    'teacher':'',
+                }
+                
+                data['startdate'] = i['startdate']
+                data['starttime'] = i['starttime']
+                data['endtime'] = i['endtime']
+                data['info'] = i['columns'][5]
+                data['room'] = i['columns'][2]
+                data['teacher'] = i['columns'][3]                            
+                event_list.append(data)
+            return event_list
+        
+        except KeyError as e:
+            pass
             
     except ValueError as e:
-        print(e)
-        print('terminating......')
-        quit
+        pass
+    
+    return [{
+        'startdate':'Not found',
+        'starttime':'Not found',
+        'endtime':'Not found',
+        'info':'Not found',
+        'room':'Not found',
+        'teacher':'Not found',
+    },]
+
 
 # Simple page scrapper
 # looking for Anmälningskod and if its Vår och Höst (HT / VT)
 def getCourseInfo(course):
     # send the request with couser ex 1DV008
-    url = 'http://lnu.se/utbildning/kurser/%s' % course
+    url = 'http://lnu.se/utbildning/kurser/%s#semseter_20%s1' % (course, __THIS_SEMESTER) 
     req = requests.get(url)
 
     # see if anmälningskod is in the page
-    match_code = re.search(r'LNU-\d\d\d\d\d', req.text, )
-
-    # see if Vår is in the page
-    match_season_var = re.search(r'V.r', req.text)
-
-    # see if Höst is in the page
-    match_season_host = re.search(r'H.st', req.text)
+    match_code = re.search(r'LNU-\d\d\d\d\d', req.text)
 
     # if matches
     if match_code:
-        print(match_code.group())
-        if match_season_host:
-            print('Höst found')
-            #getCourseEvents('HT', __THISYEAR, match_code.group()[4:])
-            return {
-                'course_code':course,
-                'course_anmalningskod':match_code.group()[4:],
-                'season':'HT',
-                'html_url':url,
-                'year':__THISYEAR,
-            }
-        if match_season_var:
-            print('Vår found')
-            #getCourseEvents('VT', __THISYEAR, match_code.group()[4:])
-            return {
-                'course_code':course,
-                'course_anmalningskod':match_code.group()[4:],
-                'season':'VT',
-                'html_url':url,
-                'year':__THISYEAR,                
-            }
+        return {
+            'course_code':course,
+            'course_anmalningskod':match_code.group()[4:],
+            'season': __THIS_SEMESTER,
+            'html_url':url,
+            'year':__THISYEAR,
+        }
 
     else:
         print(course+' not found')
             
 
-# This work like public static void main in Java
-# if __name__ == '__main__':
-#     print(__THIS_SEMESTER)
-
+#This work like public static void main in Java
+if __name__ == '__main__':
+    course = getCourseInfo('1BD101')
+    print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
