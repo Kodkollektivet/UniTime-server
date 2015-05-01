@@ -10,7 +10,8 @@ import requests
 import re
 import datetime
 
-__THISYEAR = datetime.datetime.now().strftime('%y')
+
+__THIS_YEAR = datetime.datetime.now().strftime('%y')
 __THIS_SEMESTER = ''
 __MONTH_NOW = int(datetime.datetime.now().strftime('%m'))
 
@@ -49,8 +50,8 @@ def getCourseEvents(season, year, course_anmalningskod):
         json_data = json.loads(connection.getresponse().read())
 
         # Pretty print it, only use thins when looking for all data
-        pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(json_data['messages'])
+        #pp = pprint.PrettyPrinter(indent=4)
+        #pp.pprint(json_data['messages'])
 
         event_list = []
         try:
@@ -99,27 +100,41 @@ def getCourseEvents(season, year, course_anmalningskod):
 # looking for Anmälningskod and if its Vår och Höst (HT / VT)
 def getCourseInfo(course):
     # send the request with couser ex 1DV008
-    url = 'http://lnu.se/utbildning/kurser/%s#semseter_20%s1' % (course, __THIS_SEMESTER) 
+    #'http://lnu.se/utbildning/kurser/%s#semseter_20%s1' % (course, __THIS_YEAR) 
+    url = 'http://lnu.se/utbildning/kurser/%s' % (course) 
     req = requests.get(url)
 
     # see if anmälningskod is in the page
-    match_code = re.search(r'LNU-\d\d\d\d\d', req.text)
-
-    # if matches
-    if match_code:
+    match_code_regexp = re.compile(r'LNU-\d\d\d\d\d', re.M|re.I)  # the regexp
+    match_codes = match_code_regexp.findall(req.text)             # find all of the matches, we may find many
+    match_codes = map(lambda x:x.strip('LNU-'), match_codes)  # remove LNU- from matches
+    if match_codes:
         return {
             'course_code':course,
-            'course_anmalningskod':match_code.group()[4:],
+            'course_anmalningskod':match_codes[0],  # take only the first in the list
             'season': __THIS_SEMESTER,
             'html_url':url,
-            'year':__THISYEAR,
+            'year':__THIS_YEAR,
         }
 
     else:
         print(course+' not found')
-            
+
+def getAllCourseCodes():
+
+    url = 'http://lnu.se/utbildning/kurser'
+    req = requests.get(url)                                # the request
+    # see if anmälningskod is in the page
+    match_code = re.compile(r'\(\d...\d\d\)', re.M|re.I)   # the regexp
+    all_courses = match_code.findall(req.text)             # find all of the course_anmalningskod
+    all_courses = map(lambda x:x.strip('()'), all_courses) # strip away all of the ()
+    return all_courses
 
 #This work like public static void main in Java
 if __name__ == '__main__':
-    course = getCourseInfo('1BD101')
-    print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
+    # course = getCourseInfo('1BD101')
+    # print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
+    # all_courses = getAllCourseCodes()
+    # for i in range(0, 50):
+    #     getCourseInfo(all_courses[i])
+    
