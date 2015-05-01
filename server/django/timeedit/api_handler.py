@@ -131,7 +131,7 @@ def getAllCourseCodes():
     return all_courses
 
 #This work like public static void main in Java
-if __name__ == '__main__':
+#if __name__ == '__main__':
     # course = getCourseInfo('1BD101')
     # print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
     # all_courses = getAllCourseCodes()
