@@ -1,5 +1,8 @@
 # -*- coding:utf-8 -*-
 
+# Links that does not work
+# http://lnu.se/utbildning/kurser/1MA164
+
 import httplib
 import json
 import pprint
@@ -8,7 +11,17 @@ import re
 import datetime
 
 __THISYEAR = datetime.datetime.now().strftime('%y')
+__THIS_SEMESTER = ''
+__MONTH_NOW = int(datetime.datetime.now().strftime('%m'))
 
+
+# Evaluate if now() is HT or VT
+if (__MONTH_NOW <= 6):
+    __THIS_SEMESTER = 'VT'
+else:
+    __THIS_SEMESTER = 'HT'
+
+    
 # course here is Anmälningskod
 # season is VT or HT
 # year is __THISYEAR
@@ -110,6 +123,8 @@ def getCourseInfo(course):
     else:
         print(course+' not found')
             
-    
-#getSimpleRequests('1dv008')
+
+# This work like public static void main in Java
+# if __name__ == '__main__':
+#     print(__THIS_SEMESTER)
 
