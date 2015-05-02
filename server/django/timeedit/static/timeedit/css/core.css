@@ -1,12 +1,67 @@
-.search {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  margin-top: -50px;
-  margin-left: -100px;
-}
 
 body {
     background-image: url("/static/timeedit/img/background.png");
 }
 
+.search{
+    margin-top: 10px;
+    background-image: url("/static/timeedit/img/background.png");
+
+}
+
+.well{
+    background-image: url("/static/timeedit/img/background.png");
+    border: 2px solid #333;
+}
+
+#header{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 50pt;
+}
+#headertext{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 25pt;
+    color: #333;
+}
+
+#headertexterror{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 20pt;
+    color: darkred;
+}
+#modalheader{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 20pt;
+    color: #333;
+}
+#modaltext{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 15pt;
+    color: #333;
+}
+#searchbutton{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    color: #333;
+    font-size: 100%;
+}
+
+.btn{
+    width: 100%;
+}
+
+.buttonrow{
+    margin-top: 20px;
+}
+
+.inputrow {
+    margin-top: 20px;
+}
+
+
+#id_course{
+    width: 100%;
+}
+
+.events {
+    margin-top: 20px;
+}

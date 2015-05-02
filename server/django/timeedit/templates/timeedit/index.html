@@ -14,32 +14,147 @@
     <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/bootstrap.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/jquery-ui.min.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/core.css' %}">
+    <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:700' rel='stylesheet' type='text/css'>
     </head>
 <body>
 <div>
-    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" align="center">
-        <div class="search">
-            <div class="row">
-                <h3>Search for you course</h3>
-            </div>
-	    {% if message %}
-            <div class="row">
-	      <h4>{{ message }}</h4>
-	    </div>
-	    {% endif %}
-            <div class="row">
-                {{ form.errors }}
-            </div>
-            <form method="post" name="form" action="">{% csrf_token %}
-                <div class="row">
-                    {{ form.course }}
-                </div>
-                <div class="row" style="margin-top: 10px">
-                    <button class="btn btn-lg btn-primary" type="submit">Search</button>
-                </div>
-            </form>
+<!-- Header UniTime -->
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" align="center">
+            <div id="header">UniTime</div>
         </div>
     </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" align="center"></div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" align="center">
+            <div class="search">
+                {% if message %}
+                    <div class="row" id="headertexterror">
+                        {{ message }}
+                    </div>
+                {% else %}
+                    <div class="row" id="headertext">
+                        Search for your course
+                    </div>
+
+                {% endif %}
+                <div class="row">
+                    {{ form.errors }}
+                </div>
+                <form method="post" name="form" action="">{% csrf_token %}
+
+                    <div class="row inputrow">
+                        <div class="col-xs-1 col-sm-1 col-md-4 col-lg-3" align="center"></div>
+                        <div class="col-xs-10 col-sm-10 col-md-4 col-lg-6" align="center">
+                        {{ form.course }}
+                            </div>
+                        <div class="col-xs-1 col-sm-1 col-md-4 col-lg-3" align="center"></div>
+                    </div>
+
+                    <div class="row buttonrow">
+                        <div class="col-xs-1 col-sm-1 col-md-3 col-lg-3" align="center"></div>
+
+                        <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2" align="center">
+                            <button class="btn btn-lg btn-primary" type="button" data-toggle="modal" data-target="#myModal">
+                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                            </button>
+                        </div>
+
+                        <div class="col-xs-7 col-sm-7 col-md-4 col-lg-4" align="center">
+                            <button class="btn btn-lg btn-success" type="submit">
+                                <div id="searchbutton">Search</div>
+                            </button>
+                        </div>
+
+                        <div class="col-xs-1 col-sm-1 col-md-3 col-lg-3" align="center"></div>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" align="center"></div>
+    </div>
+</div>
+
+<!-- Events -->
+
+<div class="events">
+{% if course %}
+    <div class="row">
+        <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
+        <div class="col-xs-10 col-sm-10 col-md-4 col-lg-4" align="center">
+            <div class="well">
+                <div id="modalheader">{{ course.course_code }}</div><br>
+                <a href="{{ course.html_url }}">Link to course page</a>
+            </div>
+        </div>
+        <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
+    </div>
+{% endif %}
+
+{% if events %}
+{% for e in events %}
+<div class="row">
+    <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
+
+    <div class="col-xs-10 col-sm-10 col-md-4 col-lg-4" align="center">
+        <div class="well">
+            <div id="modalheader">
+            {{ e.info }}
+            </div>
+            <br>
+            <div id="modaltext">
+            {{ e.startdate }}
+            </div>
+            <br>
+            <div id="modaltext">
+            {{ e.starttime }} - {{ e.endtime }}
+            </div>
+            </br>
+            <div id="modaltext">
+            {{ e.room }}
+            </div>
+            <br>
+            <div id="modaltext">
+            {{ e.teacher }}
+            </div>
+            <br>
+        </div>
+    </div>
+
+    <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
+</div>
+{% endfor %}
+{% endif %}
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" align="center">
+            <div id="modalheader">
+                UniTime
+                <div>
+        </h4>
+      </div>
+      <div class="modal-body" align="center">
+        <div id="modaltext">
+            UniTime is a tool for searching for your course schedule.<br>
+            Enter your course code and click on the search button.<br>
+            Cousers codes look like this: 1DV008, 1MA162.<br>
+            <br>
+            <br>
+            / UniTime team
+        </div>
+      </div>
+
+    </div>
+  </div>
 </div>
 </body>
 </html>

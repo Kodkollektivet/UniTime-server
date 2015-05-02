@@ -36,9 +36,10 @@ class IndexView(generic.View):
                     return render(request, 'timeedit/index.html', {'form':form, 'message':'Sorry, cant handle your request! A codemonkey will be slayed for that!'})
                 
             return render(request,
-                          'timeedit/event.html',
+                          'timeedit/index.html',
                           {'course':course,
-                           'events': getCourseEvents(course.season, course.year, course.course_anmalningskod)
+                           'events': getCourseEvents(course.season, course.year, course.course_anmalningskod),
+                           'form':form,
                        }
             )
         return render(request, 'timeedit/index.html', {'form':form})
