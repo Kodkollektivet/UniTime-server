@@ -63,5 +63,12 @@ body {
 }
 
 .events {
-    margin-top: 20px;
+    margin-top: 20pt;
+}
+
+#betatext{
+    margin-right: -90pt;
+    margin-bottom: -35pt;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    color: firebrick;
 }
