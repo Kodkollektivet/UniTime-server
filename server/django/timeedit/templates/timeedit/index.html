@@ -24,58 +24,60 @@
             <div id="header">UniTime</div>
         </div>
     </div>
+    <div class="row">
+        <div class="search" align="center">
+            {% if message %}
+                <div class="row" id="headertexterror">
+                    {{ message }}
+                </div>
+            {% else %}
+                <div class="row" id="headertext">
+                    Search for your course
+                </div>
+            {% endif %}
+        </div>
+    </div>
 
     <div class="row">
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" align="center"></div>
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" align="center">
-            <div class="search">
-                {% if message %}
-                    <div class="row" id="headertexterror">
-                        {{ message }}
-                    </div>
-                {% else %}
-                    <div class="row" id="headertext">
-                        Search for your course
-                    </div>
-
-                {% endif %}
-                <div class="row">
-                    {{ form.errors }}
-                </div>
-                <form method="post" name="form" action="">{% csrf_token %}
-
-                    <div class="row inputrow">
-                        <div class="col-xs-1 col-sm-1 col-md-4 col-lg-3" align="center"></div>
-                        <div class="col-xs-10 col-sm-10 col-md-4 col-lg-6" align="center">
-                        {{ form.course }}
-                            </div>
-                        <div class="col-xs-1 col-sm-1 col-md-4 col-lg-3" align="center"></div>
-                    </div>
-
-                    <div class="row buttonrow">
-                        <div class="col-xs-1 col-sm-1 col-md-3 col-lg-3" align="center"></div>
-
-                        <div class="col-xs-3 col-sm-3 col-md-2 col-lg-2" align="center">
-                            <button class="btn btn-lg btn-primary" type="button" data-toggle="modal" data-target="#myModal">
-                                <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
-                            </button>
-                        </div>
-
-                        <div class="col-xs-7 col-sm-7 col-md-4 col-lg-4" align="center">
-                            <button class="btn btn-lg btn-success" type="submit">
-                                <div id="searchbutton">Search</div>
-                            </button>
-                        </div>
-
-                        <div class="col-xs-1 col-sm-1 col-md-3 col-lg-3" align="center"></div>
-                    </div>
-
-                </form>
-            </div>
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" align="center">
+            {{ form.errors }}
         </div>
-        <div class="col-xs-12 col-sm-12 col-md-4 col-lg-4" align="center"></div>
     </div>
+
+    <form method="post" name="form" action="">{% csrf_token %}
+
+        <div class="row inputrow">
+            <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4" align="center"></div>
+            <div class="col-xs-10 col-sm-10 col-md-4 col-lg-4" align="center">
+                {{ form.course }}
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4" align="center"></div>
+        </div>
+
+        <div class="row buttonrow">
+            <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4" align="center"></div>
+
+            <div class="col-xs-3 col-sm-3 col-md-1 col-lg-1" align="center">
+                <button class="btn btn-lg btn-primary" type="button" data-toggle="modal" data-target="#myModal">
+                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="col-xs-7 col-sm-7 col-md-3 col-lg-3" align="center">
+                <button class="btn btn-lg btn-success" type="submit">
+                    <div id="searchbutton">Search</div>
+                </button>
+            </div>
+
+            <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4" align="center"></div>
+        </div>
+
+    </form>
 </div>
+
+
+
+
 
 <!-- Events -->
 
