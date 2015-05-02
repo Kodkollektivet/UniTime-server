@@ -10,8 +10,9 @@ body {
 }
 
 .well{
-    background-image: url("/static/timeedit/img/background.png");
+    /*background-image: url("/static/timeedit/img/background.png");*/
     border: 2px solid #333;
+    background-color: #EAE5D0;
 }
 
 #header{
