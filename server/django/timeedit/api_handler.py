@@ -11,7 +11,7 @@ import re
 import datetime
 import logging
 
-LOG = logging.getLogger(__name__)
+LOG = logging.getLogger('root')
 
 __THIS_YEAR = datetime.datetime.now().strftime('%y')
 __THIS_SEMESTER = ''
@@ -107,7 +107,7 @@ def getCourseInfo(course):
     req = requests.get(url)
 
     # Logging
-    LOG.info(course)
+    LOG.debug(course)
     
     # see if anmälningskod is in the page
     match_code_regexp = re.compile(r'LNU-\d\d\d\d\d', re.M|re.I)  # the regexp

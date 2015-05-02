@@ -20,9 +20,9 @@ class IndexView(generic.View):
         if form.is_valid():
             course_post = form.cleaned_data['course'].upper()
 
-            # Test log
-            LOG = logging.getLogger(__name__)
-            LOG.info(course_post)
+            # Log
+            LOG = logging.getLogger('view')
+            LOG.info(course_post) # Logs the search post before it reaches the api_handler
             
             print(course_post)
             try:
