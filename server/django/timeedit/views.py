@@ -1,4 +1,5 @@
 import json
+import logging
 
 from django.shortcuts import render, render_to_response
 from django.views import generic
@@ -18,6 +19,11 @@ class IndexView(generic.View):
         form = EventForm(request.POST)
         if form.is_valid():
             course_post = form.cleaned_data['course'].upper()
+
+            # Test log
+            LOG = logging.getLogger(__name__)
+            LOG.info(course_post)
+            
             print(course_post)
             try:
                 course = Course.objects.get(course_code=course_post)

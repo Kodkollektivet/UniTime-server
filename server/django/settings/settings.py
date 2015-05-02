@@ -108,3 +108,53 @@ STATIC_ROOT = '/var/www/static/'
 
 # Crispyforms settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
+LOGGING = {
+    'version':1,
+    'disable_existing_loggers': True,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+        },
+    },
+    'handlers': {
+        'default': {
+            'level' : 'DEBUG',
+            'class' : 'logging.handlers.RotatingFileHandler',
+            'filename' : '/var/log/unitime/debug.log',
+            'maxBytes' : 1024 * 1024 * 5, # 5BM
+            'backupCount' : 5,
+            'formatter' : 'standard',
+        },
+        'request_handler': {
+            'level' : 'DEBUG',
+            'class' : 'logging.handlers.RotatingFileHandler',
+            'filename' : '/var/log/unitime/requests.log',
+            'maxBytes' : 1024 * 1024 * 5, # 5MB
+            'backupCount' : 5,
+            'formatter': 'standard'
+        },
+        'info_handler': {
+            'level' : 'INFO',
+            'class' : 'logging.handlers.RotatingFileHandler',
+            'filename' : '/var/log/unitime/info.log',
+            'maxBytes' : 1024 * 1024 * 5, # 5MB
+            'backupCount' : 5,
+            'formatter': 'standard'
+        },
+    },
+    'loggers': {
+        
+        '': {
+            'handlers' : ['default', 'info_handler'],
+            'level' : 'DEBUG',
+            'propagate' : False
+        },
+        'django.request' : {
+            'handlers' : ['request_handler'],
+            'level' : 'DEBUG',
+            'propagate' : False
+        }
+    }
+}

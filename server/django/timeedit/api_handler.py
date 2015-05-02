@@ -9,7 +9,9 @@ import pprint
 import requests
 import re
 import datetime
+import logging
 
+LOG = logging.getLogger(__name__)
 
 __THIS_YEAR = datetime.datetime.now().strftime('%y')
 __THIS_SEMESTER = ''
@@ -104,6 +106,9 @@ def getCourseInfo(course):
     url = 'http://lnu.se/utbildning/kurser/%s' % (course) 
     req = requests.get(url)
 
+    # Logging
+    LOG.info(course)
+    
     # see if anmälningskod is in the page
     match_code_regexp = re.compile(r'LNU-\d\d\d\d\d', re.M|re.I)  # the regexp
     match_codes = match_code_regexp.findall(req.text)             # find all of the matches, we may find many
@@ -131,10 +136,10 @@ def getAllCourseCodes():
     return all_courses
 
 #This work like public static void main in Java
-#if __name__ == '__main__':
-    # course = getCourseInfo('1BD101')
-    # print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
-    # all_courses = getAllCourseCodes()
-    # for i in range(0, 50):
-    #     getCourseInfo(all_courses[i])
+if __name__ == '__main__':
+    #course = getCourseInfo('1BD101')
+    #print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
+    all_courses = getAllCourseCodes()
+    for i in range(0, 50):
+        print(getCourseInfo(all_courses[i]))
     
