@@ -59,7 +59,8 @@
                 }
             }),
             $( "#id_course" ).autocomplete({
-                source: availableTags
+                source: availableTags,
+                minLength: 3
             });
             return false;
         });
