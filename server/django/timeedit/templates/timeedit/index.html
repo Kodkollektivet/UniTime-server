@@ -44,6 +44,27 @@
         </div>
     </div>
 
+
+    <script>
+        $(function() {
+            var availableTags = [];
+            $.ajax({
+                url: {% url 'json' %},
+                type: "GET",
+                dataType: "json",
+                success: function (json) {
+                    for (i = 0 ; i < json.length ; i++) {
+                        availableTags.push(json[i]);
+                    };
+                }
+            }),
+            $( "#id_course" ).autocomplete({
+                source: availableTags
+            });
+            return false;
+        });
+  </script>
+
     <form method="post" name="form" action="">{% csrf_token %}
 
         <div class="row inputrow">

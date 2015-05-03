@@ -11,6 +11,10 @@ import pprint
 import datetime
 import logging
 
+from django.http import HttpResponse
+
+from .models import Course
+
 defaultLogger = logging.getLogger('defaultLogger')
 errorLogger = logging.getLogger('errorLogger')
 
@@ -112,7 +116,6 @@ def getCourseInfo(course):
     match_codes = match_code_regexp.findall(req.text)             # find all of the matches, we may find many
     match_codes = map(lambda x:x.strip('LNU-'), match_codes)  # remove LNU- from matches
     if match_codes:
-        print('wtf')
         defaultLogger.info('-------------SUCCSESSFUL REQUEST--------------')
         defaultLogger.info('Course: %s' % course)
         defaultLogger.info('URL: %s' % url)
@@ -142,7 +145,7 @@ def getCourseInfo(course):
         
         print('Course not found') # Course cant print, problem with utf encoding
 
-def getAllCourseCodes():
+def getAllCourseCodes(request):
 
     url = 'http://lnu.se/utbildning/kurser'
     req = requests.get(url)                                # the request
@@ -150,7 +153,14 @@ def getAllCourseCodes():
     match_code = re.compile(r'\(\d...\d\d\)', re.M|re.I)   # the regexp
     all_courses = match_code.findall(req.text)             # find all of the course_anmalningskod
     all_courses = map(lambda x:x.strip('()'), all_courses) # strip away all of the ()
-    return all_courses
+    for i in all_courses:
+        try:
+            new_course = Course(**getCourseInfo(i))
+            new_course.save()
+        except TypeError:
+            print('couldnt save: '+i)
+        print(new_course.course_code + ' saved......')
+    return HttpResponse('Everything stored....')
 
 #This work like public static void main in Java
 # if __name__ == '__main__':

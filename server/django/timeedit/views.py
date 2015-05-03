@@ -54,5 +54,7 @@ class IndexView(generic.View):
         return render(request, 'timeedit/index.html', {'form':form})
 
 
+def allCouseCodesInJSON(request):
+    return HttpResponse(json.dumps(map(lambda c: c.course_code, Course.objects.all())),content_type='application/json')
 
         
