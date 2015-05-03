@@ -2,7 +2,7 @@ from django.db import models
 
 class Course(models.Model):
 
-    course_code = models.CharField(max_length = 10) # 1DV008
+    course_code = models.CharField(max_length = 10, unique=True) # 1DV008
     course_anmalningskod = models.CharField(max_length = 10, blank=True) # ex: 67504
     season = models.CharField(max_length = 2)       # HT / VT
     html_url = models.CharField(max_length = 254)   # html url
