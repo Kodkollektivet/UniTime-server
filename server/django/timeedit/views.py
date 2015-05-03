@@ -26,7 +26,7 @@ class IndexView(generic.View):
             LOG = logging.getLogger('view')
             LOG.info(course_post) # Logs the search post before it reaches the api_handler
             
-            print(course_post)
+            #print(course_post) #Not working with öäå
             try:
                 course = Course.objects.get(course_code=course_post)
             except Course.DoesNotExist as e:

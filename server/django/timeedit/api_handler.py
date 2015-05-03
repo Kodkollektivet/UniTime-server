@@ -123,7 +123,7 @@ def getCourseInfo(course):
         }
 
     else:
-        print(course+' not found')
+        print('Course not found') # Course cant print, problem with utf encoding
 
 def getAllCourseCodes():
 
@@ -136,10 +136,10 @@ def getAllCourseCodes():
     return all_courses
 
 #This work like public static void main in Java
-if __name__ == '__main__':
-    #course = getCourseInfo('1BD101')
-    #print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
-    all_courses = getAllCourseCodes()
-    for i in range(0, 50):
-        print(getCourseInfo(all_courses[i]))
+# if __name__ == '__main__':
+#     course = getCourseInfo('1BD101')
+#     print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
+#     all_courses = getAllCourseCodes()
+#     for i in range(0, 50):
+#         print(getCourseInfo(all_courses[i]))
     
