@@ -16,12 +16,12 @@ class IndexView(generic.View):
     def get(self, request, *args, **kwargs):
         form = EventForm()
         return render(request, 'timeedit/index.html', {'form':form})
-
+    
     def post(self, request, *args, **kwargs):
         form = EventForm(request.POST)
         if form.is_valid():
             course_post = form.cleaned_data['course'].upper()
-
+            
             # Log
             searchLogger = logging.getLogger('searchLogger')
             searchLogger.info(course_post) # Logs the search post before it reaches the api_handler
@@ -29,6 +29,13 @@ class IndexView(generic.View):
             #print(course_post) #Not working with öäå
             try:
                 course = Course.objects.get(course_code=course_post)
+                
+                defaultLogger = logging.getLogger('defaultLogger')                
+                defaultLogger.info('----------------FETCHED FROM DB---------------')
+                defaultLogger.info('Course: %s' % course_post)
+                defaultLogger.info('-----------------END OF FETCH-----------------')
+                defaultLogger.info(' ')
+                
             except Course.DoesNotExist as e:
                 try:
                     course = Course(**getCourseInfo(course_post))
