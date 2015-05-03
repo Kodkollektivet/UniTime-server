@@ -5,13 +5,14 @@
 
 import httplib
 import json
-import pprint
 import requests
 import re
+import pprint
 import datetime
 import logging
 
-LOG = logging.getLogger('root')
+defaultLogger = logging.getLogger('defaultLogger')
+errorLogger = logging.getLogger('errorLogger')
 
 __THIS_YEAR = datetime.datetime.now().strftime('%y')
 __THIS_SEMESTER = ''
@@ -36,7 +37,7 @@ def getCourseEvents(season, year, course_anmalningskod):
 
         # HTTPS connection
         connection = httplib.HTTPSConnection('se.timeedit.net')
-
+        
         # HTTP header
         header = {
             'Content-Type':'application/json; charset=UTF-8',
@@ -50,7 +51,7 @@ def getCourseEvents(season, year, course_anmalningskod):
 
         # Read the json data and create a python dict
         json_data = json.loads(connection.getresponse().read())
-
+        
         # Pretty print it, only use thins when looking for all data
         #pp = pprint.PrettyPrinter(indent=4)
         #pp.pprint(json_data['messages'])
@@ -106,14 +107,18 @@ def getCourseInfo(course):
     url = 'http://lnu.se/utbildning/kurser/%s' % (course) 
     req = requests.get(url)
 
-    # Logging
-    LOG.debug(course)
-    
     # see if anmälningskod is in the page
     match_code_regexp = re.compile(r'LNU-\d\d\d\d\d', re.M|re.I)  # the regexp
     match_codes = match_code_regexp.findall(req.text)             # find all of the matches, we may find many
     match_codes = map(lambda x:x.strip('LNU-'), match_codes)  # remove LNU- from matches
     if match_codes:
+        print('wtf')
+        defaultLogger.info('-------------SUCCSESSFUL REQUEST--------------')
+        defaultLogger.info('Course: %s' % course)
+        defaultLogger.info('URL: %s' % url)
+        defaultLogger.info('Request response: %s' % req)
+        defaultLogger.info('----------------END OF REQUEST----------------')
+        defaultLogger.info(' ')
         return {
             'course_code':course,
             'course_anmalningskod':match_codes[0],  # take only the first in the list
@@ -123,6 +128,18 @@ def getCourseInfo(course):
         }
 
     else:
+
+        defaultLogger.info('----------------FAILED REQUEST---------------')
+        defaultLogger.info('Course: %s' % course)
+        defaultLogger.info('URL: %s' % url)
+        defaultLogger.info('Request response: %s' % req)
+        defaultLogger.info('----------------END OF REQUEST---------------')
+        defaultLogger.info(' ')
+        
+        errorLogger.info('MISMATCHED CODE: %s' % course)
+        errorLogger.info('URL: %s' % url)
+        errorLogger.info('-------------------------------------------')
+        
         print('Course not found') # Course cant print, problem with utf encoding
 
 def getAllCourseCodes():

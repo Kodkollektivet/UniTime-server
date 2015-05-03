@@ -23,8 +23,8 @@ class IndexView(generic.View):
             course_post = form.cleaned_data['course'].upper()
 
             # Log
-            LOG = logging.getLogger('view')
-            LOG.info(course_post) # Logs the search post before it reaches the api_handler
+            searchLogger = logging.getLogger('searchLogger')
+            searchLogger.info(course_post) # Logs the search post before it reaches the api_handler
             
             #print(course_post) #Not working with öäå
             try:
@@ -39,9 +39,9 @@ class IndexView(generic.View):
                 
             return render(request,
                           'timeedit/index.html',
-                          {'course':course,
-                           'events': getCourseEvents(course.season, course.year, course.course_anmalningskod),
-                           'form':form,
+                          {'course' : course,
+                           'events' : getCourseEvents(course.season, course.year, course.course_anmalningskod),
+                           'form' : form,
                        }
             )
         return render(request, 'timeedit/index.html', {'form':form})

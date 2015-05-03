@@ -119,16 +119,16 @@ LOGGING = {
         },
     },
     'handlers': {
-        # Logs both requests and searchterms
+        # Default log
         'default': {
-            'level' : 'DEBUG',
+            'level' : 'INFO',
             'class' : 'logging.handlers.RotatingFileHandler',
             'filename' : '/var/log/unitime/debug.log',
             'maxBytes' : 1024 * 1024 * 5, # 5BM
             'backupCount' : 5,
             'formatter' : 'standard',
         },
-        # Debug log for requests
+        # Debug log for django requests
         'request_handler': {
             'level' : 'DEBUG',
             'class' : 'logging.handlers.RotatingFileHandler',
@@ -146,21 +146,35 @@ LOGGING = {
             'backupCount' : 5,
             'formatter': 'standard'
         },
+        # For logging mismatching course codes
+        'error_Handler' : {
+            'level' : 'DEBUG',
+            'class' : 'logging.handlers.RotatingFileHandler',
+            'filename' : '/var/log/unitime/mismatch.log',
+            'maxBytes' : 1024 * 1024 * 5, # 5MB
+            'backupCount' : 5,
+            'formatter': 'standard'
+        },
     },
     'loggers': {
         
-        'root': {
+        'defaultLogger': {
             'handlers' : ['default'],
-            'level' : 'DEBUG',
-            'propagate' : False
+            'level' : 'INFO',
+            'propagate' : True
         },
         'django.request' : {
             'handlers' : ['request_handler'],
             'level' : 'DEBUG',
             'propagate' : False
         },
-        'view': {
+        'searchLogger': {
             'handlers' : ['search_handler'],
+            'level' : 'INFO',
+            'propagate' : False
+        },
+        'errorLogger' : {
+            'handlers' : ['error_Handler'],
             'level' : 'INFO',
             'propagate' : False
         }
