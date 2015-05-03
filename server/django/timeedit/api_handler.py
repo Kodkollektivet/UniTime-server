@@ -94,12 +94,12 @@ def getCourseEvents(season, year, course_anmalningskod):
         pass
     
     return [{
-        'startdate':'Not found',
-        'starttime':'Not found',
-        'endtime':'Not found',
-        'info':'Not found',
-        'room':'Not found',
-        'teacher':'Not found',
+        'startdate':'',
+        'starttime':'',
+        'endtime':'',
+        'info':'This course is inactive.',
+        'room':'',
+        'teacher':'',
     },]
 
 
@@ -110,7 +110,7 @@ def getCourseInfo(course):
     #'http://lnu.se/utbildning/kurser/%s#semseter_20%s1' % (course, __THIS_YEAR) 
     url = 'http://lnu.se/utbildning/kurser/%s' % (course) 
     req = requests.get(url)
-
+ 
     # see if anmälningskod is in the page
     match_code_regexp = re.compile(r'LNU-\d\d\d\d\d', re.M|re.I)  # the regexp
     match_codes = match_code_regexp.findall(req.text)             # find all of the matches, we may find many
