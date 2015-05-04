@@ -1,0 +1,12 @@
+2015-05-04 20:30:05,230 [INFO] errorLogger: MISMATCHED CODE: 1DV009
+2015-05-04 20:30:05,230 [INFO] errorLogger: URL: http://lnu.se/utbildning/kurser/1DV009
+2015-05-04 20:30:05,230 [INFO] errorLogger: -------------------------------------------
+2015-05-04 20:30:16,188 [INFO] errorLogger: MISMATCHED CODE: '1' = 1
+2015-05-04 20:30:16,188 [INFO] errorLogger: URL: http://lnu.se/utbildning/kurser/'1' = 1
+2015-05-04 20:30:16,188 [INFO] errorLogger: -------------------------------------------
+2015-05-04 20:52:56,978 [INFO] errorLogger: MISMATCHED CODE: AOEU
+2015-05-04 20:52:56,979 [INFO] errorLogger: URL: http://lnu.se/utbildning/kurser/AOEU
+2015-05-04 20:52:56,979 [INFO] errorLogger: -------------------------------------------
+2015-05-04 20:54:52,158 [INFO] errorLogger: MISMATCHED CODE: AUUAUOE
+2015-05-04 20:54:52,158 [INFO] errorLogger: URL: http://lnu.se/utbildning/kurser/AUUAUOE
+2015-05-04 20:54:52,159 [INFO] errorLogger: -------------------------------------------
