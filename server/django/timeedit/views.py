@@ -76,9 +76,9 @@ class CourseView(generic.View):
             course = form.cleaned_data['course'].upper()
             try:
                 return HttpResponse(json.dumps(serializers.serialize('json', [Course.objects.get(course_code=course),])), content_type='application/json')
-            except IOError as e:
-                print(e)
-        return HttpResponse('That was not a good idea')
+            except Course.DoesNotExist as e:
+                return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
+        return HttpResponse(json.dumps({'message':'Invalid input'}), content_type='application/json')
         
 class EventView(generic.View):
 
