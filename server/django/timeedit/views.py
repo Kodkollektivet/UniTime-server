@@ -7,6 +7,7 @@ from django.shortcuts import render, render_to_response
 from django.views import generic
 from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy, reverse
+from django.core import serializers
 
 from .models import Course, Event
 from .forms import EventForm
@@ -58,3 +59,5 @@ def allCouseCodesInJSON(request):
     return HttpResponse(json.dumps(map(lambda c: c.course_code, Course.objects.all())),content_type='application/json')
 
         
+def allCoursesInJSON(request):
+    return HttpResponse(json.dumps(serializers.serialize('json', Course.objects.all())), content_type='application/json')
