@@ -10,7 +10,7 @@ urlpatterns = [
     #url(r'^$', index, name='index'),
     url(r'^$', IndexView.as_view(), name='index'),
     #url(r'^getall/$', getAllCourseCodes, name='getall'),
-    url(r'^cousres_code_in_json/$', allCouseCodesInJSON, name='json'),
+    url(r'^api/only-course-codes/$', allCouseCodesInJSON, name='json'),
     #url(r'(?P<hej>\d+)/$', EventListView, name='events'),
     
     url(r'^admin/', include(admin.site.urls)),
