@@ -3,3 +3,7 @@
 db.sqlite3
 *.idea
 *.pyc
+debug.log
+search.log
+mismatch.log
+requests.log
