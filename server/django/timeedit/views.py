@@ -9,17 +9,21 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.core import serializers
 
+# Decorators
+from django.views.decorators.csrf import csrf_exempt
+from django.utils.decorators import method_decorator
+
 from .models import Course, Event
-from .forms import EventForm
+from .forms import EventForm, CourseForm
 from .api_handler import getCourseInfo, getCourseEvents
 
 class IndexView(generic.View):
     def get(self, request, *args, **kwargs):
-        form = EventForm()
+        form = CourseForm()
         return render(request, 'timeedit/index.html', {'form':form})
     
     def post(self, request, *args, **kwargs):
-        form = EventForm(request.POST)
+        form = CourseForm(request.POST)
         if form.is_valid():
             course_post = form.cleaned_data['course'].upper()
             
@@ -43,7 +47,7 @@ class IndexView(generic.View):
                     course.save()
                 except TypeError as e:
                     print(e)
-                    return render(request, 'timeedit/index.html', {'form':form, 'message':'Sorry, cant handle your request! A codemonkey will be slayed for that!'})
+                    return render(request, 'timeedit/index.html', {'form':form, 'message':'Sorry, we cant handle your request! We are working on fixing this!'})
                 
             return render(request,
                           'timeedit/index.html',
@@ -54,6 +58,32 @@ class IndexView(generic.View):
             )
         return render(request, 'timeedit/index.html', {'form':form})
 
+class CourseView(generic.View):
+
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(CourseView, self).dispatch(request, *args, **kwargs)
+        
+    # This GET returns ALL courses WITH info, can be much data here so be aware!
+    def get(self, request, *args, **kwargs):
+        return HttpResponse(json.dumps(serializers.serialize('json', Course.objects.all())), content_type='application/json')
+
+    # When POST here, only the specific course info will be sent
+    def post(self, request, *args, **kwargs):
+        form = CourseForm(request.POST)
+        print(request.POST)
+        if form.is_valid():
+            course = form.cleaned_data['course'].upper()
+            try:
+                return HttpResponse(json.dumps(serializers.serialize('json', [Course.objects.get(course_code=course),])), content_type='application/json')
+            except IOError as e:
+                print(e)
+        return HttpResponse('That was not a good idea')
+        
+class EventView(generic.View):
+
+    def post(self, request, *args, **kwargs):
+        pass
 
 def allCouseCodesInJSON(request):
     return HttpResponse(json.dumps(map(lambda c: c.course_code, Course.objects.all())),content_type='application/json')
@@ -61,3 +91,5 @@ def allCouseCodesInJSON(request):
         
 def allCoursesInJSON(request):
     return HttpResponse(json.dumps(serializers.serialize('json', Course.objects.all())), content_type='application/json')
+
+
