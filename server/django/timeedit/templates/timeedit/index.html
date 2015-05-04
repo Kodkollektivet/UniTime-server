@@ -49,7 +49,7 @@
         $(function() {
             var availableTags = [];
             $.ajax({
-                url: {% url 'json' %},
+                url: "{% url 'only-course-codes' %}",
                 type: "GET",
                 dataType: "json",
                 success: function (json) {
