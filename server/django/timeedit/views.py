@@ -13,6 +13,8 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+from ipware.ip import get_ip
+
 from .models import Course, Event
 from .forms import EventForm, CourseForm
 from .api_handler import getCourseInfo, getCourseEvents
@@ -29,7 +31,9 @@ class IndexView(generic.View):
             
             # Log
             searchLogger = logging.getLogger('searchLogger')
-            searchLogger.info(course_post) # Logs the search post before it reaches the api_handler
+            ip = get_ip(request)
+            print(ip)
+            searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip)) # Logs the search post before it reaches the api_handler
             
             #print(course_post) #Not working with öäå
             try:
