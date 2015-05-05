@@ -17,7 +17,7 @@ from ipware.ip import get_ip
 
 from .models import Course, Event
 from .forms import EventForm, CourseForm
-from .api.timeedit_handler import getCourseEvents
+from .api.timeedit_handler import getCourseEvents, getCourseId, getCourseInfo
 from .scrapper.lnu_course_page_scrapper import getCourseInfo_scrapper, getAllCourseCodes_scrapper
 
 
@@ -73,8 +73,9 @@ class IndexView(generic.View):
             except Course.DoesNotExist as e:
                 
                 try:
-                    
-                    course = Course(**getCourseInfo(course_post))
+                    course_id_list = getCourseId(course_post)
+                    print(course_id_list)
+                    course = Course(**getCourseInfo(course_id_list[0]))
                     course.save()
                 except TypeError as e:
                     print(e)
@@ -83,7 +84,7 @@ class IndexView(generic.View):
             return render(request,
                           'timeedit/index.html',
                           {'course' : course,
-                           'events' : getCourseEvents(course.semester, course.year, course.reg_code),
+                           'events' : getCourseEvents(course.semester, course.year, course.course_reg),
                            'form' : form,
                        }
             )

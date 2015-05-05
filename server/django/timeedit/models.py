@@ -3,10 +3,11 @@ from django.db import models
 class Course(models.Model):
 
     name = models.CharField(max_length=254, blank=True)  # The name of the course
-    code = models.CharField(max_length = 10, unique=True) # 1DV008
-    reg_code = models.CharField(max_length = 10, blank=True) # ex: 67504
+    course_code = models.CharField(max_length = 10, unique=True) # 1DV008
+    course_id = models.CharField(max_length = 10, blank=True, unique=True) # 60380
+    course_reg = models.CharField(max_length = 10, blank=True, unique=True) # ex: 67504
     semester = models.CharField(max_length = 2)       # HT / VT
-    url = models.CharField(max_length = 254)   # html url
+    url = models.CharField(max_length = 254, blank=True)   # html url
     year = models.CharField(max_length = 3) 
 
     def __unicode__(self):
