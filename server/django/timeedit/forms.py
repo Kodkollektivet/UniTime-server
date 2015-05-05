@@ -14,8 +14,8 @@ class EventForm(forms.Form):
     
 class CourseForm(forms.Form):
     course = forms.CharField(
-        min_length=4,
-        max_length=7,
+        min_length=6,
+        max_length=6,
            validators=[
             RegexValidator(
                 regex=re.compile(r'(^\d\w{2}\d{3}$)'),

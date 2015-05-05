@@ -77,9 +77,14 @@ class IndexView(generic.View):
                     print(course_id_list)
                     course = Course(**getCourseInfo(course_id_list[0]))
                     course.save()
+
                 except TypeError as e:
                     print(e)
                     return render(request, 'timeedit/index.html', {'form':form, 'message':'Sorry, we cant handle your request! We are working on fixing this!'})
+
+                except IndexError as e:
+                    print(e)
+                    return render(request, 'timeedit/index.html', {'form':form, 'message':'The requested course could not be found!'})
                 
             return render(request,
                           'timeedit/index.html',
