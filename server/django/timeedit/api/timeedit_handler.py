@@ -5,16 +5,23 @@
 
 import httplib
 import json
-import pprint
 import requests
 import re
+import pprint
 import datetime
+import logging
 
+from django.http import HttpResponse
+
+from ..models import Course
+
+defaultLogger = logging.getLogger('defaultLogger')
+errorLogger = logging.getLogger('errorLogger')
 
 __THIS_YEAR = datetime.datetime.now().strftime('%y')
 __THIS_SEMESTER = ''
 __MONTH_NOW = int(datetime.datetime.now().strftime('%m'))
-
+__WEEK_NOW = datetime.datetime.now().isocalendar()[1] # Not used
 
 # Evaluate if now() is HT or VT
 if (__MONTH_NOW <= 6):
@@ -34,7 +41,7 @@ def getCourseEvents(season, year, course_anmalningskod):
 
         # HTTPS connection
         connection = httplib.HTTPSConnection('se.timeedit.net')
-
+        
         # HTTP header
         header = {
             'Content-Type':'application/json; charset=UTF-8',
@@ -48,7 +55,7 @@ def getCourseEvents(season, year, course_anmalningskod):
 
         # Read the json data and create a python dict
         json_data = json.loads(connection.getresponse().read())
-
+        
         # Pretty print it, only use thins when looking for all data
         #pp = pprint.PrettyPrinter(indent=4)
         #pp.pprint(json_data['messages'])
@@ -87,54 +94,78 @@ def getCourseEvents(season, year, course_anmalningskod):
         pass
     
     return [{
-        'startdate':'Not found',
-        'starttime':'Not found',
-        'endtime':'Not found',
-        'info':'Not found',
-        'room':'Not found',
-        'teacher':'Not found',
+        'startdate':'',
+        'starttime':'',
+        'endtime':'',
+        'info':'This course is inactive.',
+        'room':'',
+        'teacher':'',
     },]
 
 
-# Simple page scrapper
-# looking for Anmälningskod and if its Vår och Höst (HT / VT)
-def getCourseInfo(course):
-    # send the request with couser ex 1DV008
-    #'http://lnu.se/utbildning/kurser/%s#semseter_20%s1' % (course, __THIS_YEAR) 
-    url = 'http://lnu.se/utbildning/kurser/%s' % (course) 
-    req = requests.get(url)
+# This function returns a list
+def getCourseId(course_code):
+    # Try to connect
+    try:
+        req = requests.get('https://se.timeedit.net/web/lnu/db1/schema2/objects.txt?max=15&fr=t&partajax=t&im=f&sid=6&l=en_US&search_text='+course_code+'%20&types=5')
+        data = json.loads(req.text)
+        try:
+            data = data['records']
 
-    # see if anmälningskod is in the page
-    match_code_regexp = re.compile(r'LNU-\d\d\d\d\d', re.M|re.I)  # the regexp
-    match_codes = match_code_regexp.findall(req.text)             # find all of the matches, we may find many
-    match_codes = map(lambda x:x.strip('LNU-'), match_codes)  # remove LNU- from matches
-    if match_codes:
+            # pp = pprint.PrettyPrinter(indent=4)
+            # pp.pprint(data)
+
+            course_code_list = []
+            
+            for course in data:
+                # This sorts out 
+                if (course['fields'][2]['values'][0] == __THIS_SEMESTER + __THIS_YEAR):
+                    course_code_list.append(course['textId'])
+
+            return course_code_list
+        
+        except KeyError as e:
+            # LOG THIS ERROR
+            print('Error in: '),
+            print(e)
+                
+    except requests.exceptions.ConnectionError as e:
+        # LOG THIS ERROR
+        print(e)
+
+        
+def getCourseInfo(course_id):
+    try:
+        req = requests.get('https://se.timeedit.net/web/lnu/db1/schema2/objects/'+course_id+'/o.json')
+        pp = pprint.PrettyPrinter(indent=4)
+        #pp.pprint(req.text)
+
+        data = json.loads(req.text)
+
+        data = json.dumps(data['records'])
+        data = json.loads(data)
+        data = data[0]['fields']
+        data = data
+        #pp.pprint(data)
+
         return {
-            'course_code':course,
-            'course_anmalningskod':match_codes[0],  # take only the first in the list
-            'season': __THIS_SEMESTER,
-            'html_url':url,
-            'year':__THIS_YEAR,
+            'name':data[1]['values'][0],           
+            'course_code':data[0]['values'][0],
+            'course_id':course_id,
+            #'vecka' (data[5]['values'][0])
+            'course_reg':data[6]['values'][0][5:],
+            'semester': __THIS_SEMESTER,
+            'url': '',
+            'year':__THIS_YEAR
         }
+            
 
-    else:
-        print(course+' not found')
+    except requests.exceptions.ConnectionError as a:
+        # LOG THIS
+        print(e)
 
-def getAllCourseCodes():
 
-    url = 'http://lnu.se/utbildning/kurser'
-    req = requests.get(url)                                # the request
-    # see if anmälningskod is in the page
-    match_code = re.compile(r'\(\d...\d\d\)', re.M|re.I)   # the regexp
-    all_courses = match_code.findall(req.text)             # find all of the course_anmalningskod
-    all_courses = map(lambda x:x.strip('()'), all_courses) # strip away all of the ()
-    return all_courses
 
-#This work like public static void main in Java
-if __name__ == '__main__':
-    course = getCourseInfo('1BD101')
-    print(getCourseEvents(course['season'], course['year'], course['course_anmalningskod']))
-    all_courses = getAllCourseCodes()
-    for i in range(0, 50):
-        getCourseInfo(all_courses[i])
+
+
     

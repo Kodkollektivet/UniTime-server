@@ -1,17 +1,15 @@
+
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from timeedit.views import IndexView, allCouseCodesInJSON
-
-from timeedit.api_handler import getAllCourseCodes
+from timeedit.views import IndexView, allCouseCodesInJSON, allCoursesInJSON, CourseView, EventView
 
 urlpatterns = [
-    # Examples:
-    #url(r'^$', index, name='index'),
     url(r'^$', IndexView.as_view(), name='index'),
-    #url(r'^getall/$', getAllCourseCodes, name='getall'),
-    url(r'^cousres_code_in_json/$', allCouseCodesInJSON, name='json'),
-    #url(r'(?P<hej>\d+)/$', EventListView, name='events'),
+    
+    url(r'^api/only-course-codes/$', allCouseCodesInJSON, name='only-course-codes'),
+    url(r'^api/course/$', CourseView.as_view(), name='course'),
+    url(r'^api/event/$', EventView.as_view(), name='event'),
     
     url(r'^admin/', include(admin.site.urls)),
 ]

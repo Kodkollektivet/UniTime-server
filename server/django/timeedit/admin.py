@@ -5,8 +5,8 @@ from .models import Course, Event
 class CourseAdmin(admin.ModelAdmin):
     model = Course
     list_per_page = 100
-    search_fields = ['course_code', 'course_anmalningskod', 'html_url', 'season', 'year']
-    list_display = ('course_code', 'course_anmalningskod', 'html_url', 'season', 'year')
+    search_fields = ['name', 'course_code', 'course_id', 'course_reg' ,'url', 'semester', 'year']
+    list_display = ('name', 'course_code', 'course_id', 'course_reg' ,'url', 'semester', 'year')
 
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Event)
