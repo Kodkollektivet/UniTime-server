@@ -26,19 +26,21 @@ class IndexView(generic.View):
     
     def post(self, request, *args, **kwargs):
         form = CourseForm(request.POST)
+        
+        searchLogger = logging.getLogger('searchLogger')
+        ip = get_ip(request)
+
         if form.is_valid():
             course_post = form.cleaned_data['course'].upper()
             
-            # Log
-            searchLogger = logging.getLogger('searchLogger')
-            ip = get_ip(request)
-            print(ip)
-            searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip)) # Logs the search post before it reaches the api_handler
+            # Logs a valid post before it reaches api_handler
+            searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
             
             #print(course_post) #Not working with öäå
             try:
                 course = Course.objects.get(course_code=course_post)
                 
+                # Logs a fetch from the db
                 defaultLogger = logging.getLogger('defaultLogger')
                 defaultLogger.info('----------------FETCHED FROM DB---------------')
                 defaultLogger.info('Course: %s' % course_post)
@@ -60,6 +62,13 @@ class IndexView(generic.View):
                            'form' : form,
                        }
             )
+        else:
+            # Logs the post if it does not pass the form validation
+            invalid_post = form.data['course']
+            searchLogger.info('Invalid Search Term: %s  IP Addr: %s' % (invalid_post, ip))
+            
+            # Renders an error response
+            return render(request, 'timeedit/index.html', {'form':form, 'message':'Invalid search format!'})
         return render(request, 'timeedit/index.html', {'form':form})
 
 class CourseView(generic.View):
