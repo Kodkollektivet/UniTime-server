@@ -2,10 +2,11 @@ from django.db import models
 
 class Course(models.Model):
 
-    course_code = models.CharField(max_length = 10, unique=True) # 1DV008
-    course_anmalningskod = models.CharField(max_length = 10, blank=True) # ex: 67504
-    season = models.CharField(max_length = 2)       # HT / VT
-    html_url = models.CharField(max_length = 254)   # html url
+    name = models.CharField(max_length=254, blank=True)  # The name of the course
+    code = models.CharField(max_length = 10, unique=True) # 1DV008
+    reg_code = models.CharField(max_length = 10, blank=True) # ex: 67504
+    semester = models.CharField(max_length = 2)       # HT / VT
+    url = models.CharField(max_length = 254)   # html url
     year = models.CharField(max_length = 3) 
 
     def __unicode__(self):

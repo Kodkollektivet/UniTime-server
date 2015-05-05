@@ -17,27 +17,49 @@ from ipware.ip import get_ip
 
 from .models import Course, Event
 from .forms import EventForm, CourseForm
-from .api_handler import getCourseInfo, getCourseEvents
+from .api.timeedit_handler import getCourseEvents
+from .scrapper.lnu_course_page_scrapper import getCourseInfo_scrapper, getAllCourseCodes_scrapper
+
 
 class IndexView(generic.View):
+
+    '''
+    This is the main Index view for the web gui
+    '''
+
+    # GET , return empty form
     def get(self, request, *args, **kwargs):
+        
+        # Create empty form
         form = CourseForm()
+
+        # Return empty form with request, template, form
         return render(request, 'timeedit/index.html', {'form':form})
-    
+
+    # POST, 
     def post(self, request, *args, **kwargs):
+
+        # Create new form and pass in post info.
         form = CourseForm(request.POST)
         
         searchLogger = logging.getLogger('searchLogger')
         ip = get_ip(request)
 
+
+        # If form is valid
         if form.is_valid():
+
+            # variable with cleaned data from the form
             course_post = form.cleaned_data['course'].upper()
             
             # Logs a valid post before it reaches api_handler
             searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
             
             #print(course_post) #Not working with öäå
+
+            # Try to get if course from database
             try:
+                
                 course = Course.objects.get(course_code=course_post)
                 
                 # Logs a fetch from the db
@@ -46,9 +68,12 @@ class IndexView(generic.View):
                 defaultLogger.info('Course: %s' % course_post)
                 defaultLogger.info('-----------------END OF FETCH-----------------')
                 defaultLogger.info(' ')
-                
+
+            # If course dont exist in the database
             except Course.DoesNotExist as e:
+                
                 try:
+                    
                     course = Course(**getCourseInfo(course_post))
                     course.save()
                 except TypeError as e:
@@ -58,7 +83,7 @@ class IndexView(generic.View):
             return render(request,
                           'timeedit/index.html',
                           {'course' : course,
-                           'events' : getCourseEvents(course.season, course.year, course.course_anmalningskod),
+                           'events' : getCourseEvents(course.semester, course.year, course.reg_code),
                            'form' : form,
                        }
             )
@@ -96,7 +121,7 @@ class CourseView(generic.View):
 
         # Empty form, the reason a form i here is because we do data validation with forms. Check out CourseForm inside of forms.py
         form = CourseForm(request.POST)
-
+        print(request.POST)
         # If form data is valid, continue. Else send error messages
         if form.is_valid():
 
@@ -107,7 +132,7 @@ class CourseView(generic.View):
             try:
 
                 # If object is found, serialize it and send it as json
-                return HttpResponse(json.dumps(serializers.serialize('json', [Course.objects.get(course_code=course),])), content_type='application/json')
+                return HttpResponse(json.dumps(serializers.serialize('json', [Course.objects.get(reg_code=course),])), content_type='application/json')
 
             # If object not found in database, send this
             except Course.DoesNotExist as e:
@@ -124,6 +149,7 @@ class EventView(generic.View):
     '''
     This method is for accepting client requests that dont provide a csrf token.
     '''
+    
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super(EventView, self).dispatch(request, *args, **kwargs)
