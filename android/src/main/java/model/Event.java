@@ -1,46 +1,55 @@
 package model;
 
+import java.time.LocalDate;
+
 /**
  * Created by otto on 2015-05-03.
  */
-public class Event {
+public class Event implements Comparable{
 
-    private String date;
+    private String startdate;
 
-    private String startTime;
+    private String starttime;
 
-    private String endTime;
+    private String endtime;
 
     private String info;
 
     private String room;
 
-    private String group;
+    private String teacher;
 
-    private String course;
 
-    public String getDate() {
-        return date;
+    public String getStartdate() {
+        return startdate;
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setStartdate(String startdate) {
+        this.startdate = startdate;
     }
 
-    public String getStartTime() {
-        return startTime;
+    public String getStarttime() {
+        return starttime;
     }
 
-    public void setStartTime(String startTime) {
-        this.startTime = startTime;
+    public void setStarttime(String starttime) {
+        this.starttime = starttime;
     }
 
-    public String getEndTime() {
-        return endTime;
+    public String getEndtime() {
+        return endtime;
     }
 
-    public void setEndTime(String endTime) {
-        this.endTime = endTime;
+    public void setEndtime(String endtime) {
+        this.endtime = endtime;
+    }
+
+    public String getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(String teacher) {
+        this.teacher = teacher;
     }
 
     public String getInfo() {
@@ -59,19 +68,8 @@ public class Event {
         this.room = room;
     }
 
-    public String getGroup() {
-        return group;
-    }
-
-    public void setGroup(String group) {
-        this.group = group;
-    }
-
-    public String getCourse() {
-        return course;
-    }
-
-    public void setCourse(String course) {
-        this.course = course;
+    public int compareTo(Object event) {
+        Event e = (Event) event;
+        return LocalDate.parse(this.starttime).compareTo(LocalDate.parse(e.starttime));
     }
 }

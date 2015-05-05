@@ -9,13 +9,21 @@ buildscript {
 }
 
 apply plugin: 'org.javafxports.jfxmobile'
+apply plugin: 'java'
+apply plugin: 'maven'
 
-mainClassName = 'Main'
+mainClassName = 'MainView'
 version = '8u45'
 
 repositories {
-    jcenter()
+    mavenCentral()
+
+
 }
+dependencies {
+    compile 'org.apache.httpcomponents:httpcomponents-core:4.4.1'
+}
+
 
 jfxmobile {
     ios {

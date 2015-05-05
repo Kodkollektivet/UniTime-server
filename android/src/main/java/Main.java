@@ -21,12 +21,12 @@ public class Main extends Application
         try {
             root = fxmlLoader.load();
             Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
+            Scene scene = new Scene(root);
             MainViewController mainViewController = fxmlLoader.getController();
             mainViewController.setStageSize((int) visualBounds.getHeight(), (int) visualBounds.getWidth());
-            Scene scene = new Scene(root);
+            mainViewController.setStage(primaryStage);
             primaryStage.setScene(scene);
             primaryStage.setTitle("UniTime");
-            System.out.println(visualBounds.getHeight() + " " + visualBounds.getWidth());
             primaryStage.show();
         } catch(Exception e) {
             e.printStackTrace();
