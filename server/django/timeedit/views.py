@@ -60,7 +60,7 @@ class IndexView(generic.View):
             # Try to get if course from database
             try:
                 
-                course = Course.objects.get(course_code=course_post)
+                course = Course.objects.filter(course_code=course_post)
                 
                 # Logs a fetch from the db
                 defaultLogger = logging.getLogger('defaultLogger')
@@ -75,25 +75,38 @@ class IndexView(generic.View):
                 try:
                     course_id_list = getCourseId(course_post)
                     print(course_id_list)
-                    course = Course(**getCourseInfo(course_id_list[0]))
-                    course.save()
+                    for i in course_id_list:
+                        try:
+                            course = Course(**getCourseInfo(i))
+                            course.save()
+                        except IOError as e:
+                            print(e)
 
                 except TypeError as e:
                     print(e)
                     return render(request, 'timeedit/index.html', {'form':form, 'message':'Sorry, we cant handle your request! We are working on fixing this!'})
 
+
                 except IndexError as e:
                     print(e)
                     return render(request, 'timeedit/index.html', {'form':form, 'message':'The requested course could not be found!'})
-                
+
+            list_with_courses_events = []
+            print('here')
+            for i in Course.objects.filter(course_code=course_post):
+                events = getCourseEvents(i.semester, i.year, i.course_reg)
+                list_with_courses_events.append(events)
+                print(events)
+
             return render(request,
                           'timeedit/index.html',
-                          {'course' : course,
-                           'events' : getCourseEvents(course.semester, course.year, course.course_reg),
+                          {'course' : course[0],
+                           'events' : max(list_with_courses_events),
                            'form' : form,
                        }
             )
         else:
+            print('Not valid')
             # Logs the post if it does not pass the form validation
             invalid_post = form.data['course']
             searchLogger.info('Invalid Search Term: %s  IP Addr: %s' % (invalid_post, ip))
