@@ -138,7 +138,7 @@ class CourseView(generic.View):
             try:
 
                 # If object is found, serialize it and send it as json
-                return HttpResponse(json.dumps(serializers.serialize('json', [Course.objects.get(reg_code=course),])), content_type='application/json')
+                return HttpResponse(json.dumps(serializers.serialize('json', [Course.objects.get(course_code=course),])), content_type='application/json')
 
             # If object not found in database, send this
             except Course.DoesNotExist as e:
