@@ -2,6 +2,7 @@
 
 import json
 import logging
+from sets import Set
 
 from django.shortcuts import render, render_to_response
 from django.views import generic
@@ -39,6 +40,9 @@ class IndexView(generic.View):
     # POST, 
     def post(self, request, *args, **kwargs):
 
+        list_with_course_events = []
+        list_with_courses = []
+
         # Create new form and pass in post info.
         form = CourseForm(request.POST)
         
@@ -60,14 +64,23 @@ class IndexView(generic.View):
             # Try to get if course from database
             try:
                 
-                course = Course.objects.filter(course_code=course_post)
-                
+                course = Course.objects.all().filter(course_code=course_post)
+                list_with_courses.append(course)
+                print(course)
                 # Logs a fetch from the db
                 defaultLogger = logging.getLogger('defaultLogger')
                 defaultLogger.info('----------------FETCHED FROM DB---------------')
                 defaultLogger.info('Course: %s' % course_post)
                 defaultLogger.info('-----------------END OF FETCH-----------------')
                 defaultLogger.info(' ')
+
+                if len(course) == 0:
+                    for i in getCourseId(course_post):
+                        course = Course(**getCourseInfo(i))
+                        course.save()
+                        list_with_courses.append(course)
+                else:
+                    pass
 
             # If course dont exist in the database
             except Course.DoesNotExist as e:
@@ -91,17 +104,28 @@ class IndexView(generic.View):
                     print(e)
                     return render(request, 'timeedit/index.html', {'form':form, 'message':'The requested course could not be found!'})
 
-            list_with_courses_events = []
+
             print('here')
-            for i in Course.objects.filter(course_code=course_post):
+            for i in Course.objects.all().filter(course_code=course_post):
                 events = getCourseEvents(i.semester, i.year, i.course_reg)
-                list_with_courses_events.append(events)
+                list_with_course_events.append(events)
+                list_with_courses.append(i)
+                print(len(events))
                 print(events)
+
+            if len(list_with_course_events) > 1:
+                events = max(list_with_course_events)
+            else:
+                try:
+                    events = list_with_course_events[0]
+                except IndexError as e:
+                    print(e)
+                    return render(request, 'timeedit/index.html', {'form':form, 'message':'The requested course could not be found!'})
 
             return render(request,
                           'timeedit/index.html',
-                          {'course' : course[0],
-                           'events' : max(list_with_courses_events),
+                          {'course' : list_with_courses[0],
+                           'events' : events,
                            'form' : form,
                        }
             )
@@ -205,7 +229,7 @@ class EventView(generic.View):
 
     
 def allCouseCodesInJSON(request):
-    return HttpResponse(json.dumps(map(lambda c: c.course_code, Course.objects.all())),content_type='application/json')
+    return HttpResponse(json.dumps((map(lambda c: c.course_code, Course.objects.all()))),content_type='application/json')
 
         
 def allCoursesInJSON(request):
