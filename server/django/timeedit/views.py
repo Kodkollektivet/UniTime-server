@@ -14,6 +14,10 @@ from django.core import serializers
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
+# Exceptions
+from django.core.exceptions import *
+
+
 from ipware.ip import get_ip
 
 from .models import Course, Event
@@ -40,15 +44,11 @@ class IndexView(generic.View):
     # POST, 
     def post(self, request, *args, **kwargs):
 
-        list_with_course_events = []
-        list_with_courses = []
-
         # Create new form and pass in post info.
         form = CourseForm(request.POST)
         
         searchLogger = logging.getLogger('searchLogger')
         ip = get_ip(request)
-
 
         # If form is valid
         if form.is_valid():
@@ -63,81 +63,76 @@ class IndexView(generic.View):
 
             # Try to get if course from database
             try:
-                
-                course = Course.objects.all().filter(course_code=course_post)
-                list_with_courses.append(course)
-                print(course)
+                # If there is only one course for the course code in database
+                course = Course.objects.get(course_code = course_post)
                 # Logs a fetch from the db
                 defaultLogger = logging.getLogger('defaultLogger')
                 defaultLogger.info('----------------FETCHED FROM DB---------------')
                 defaultLogger.info('Course: %s' % course_post)
                 defaultLogger.info('-----------------END OF FETCH-----------------')
                 defaultLogger.info(' ')
+                return render(request,
+                              'timeedit/index.html',
+                              {'course' : course,
+                               'events' : getCourseEvents(course.semester, course.year, course.course_reg),
+                               'form' : form}
+                )
 
-                if len(course) == 0:
-                    for i in getCourseId(course_post):
-                        course = Course(**getCourseInfo(i))
-                        course.save()
-                        list_with_courses.append(course)
-                else:
-                    pass
+            # If there is mulit course objects in the database
+            except MultipleObjectsReturned as e:
+                courses = Course.objects.filter(course_code = course_post)
+                course_events_list = []
+                
+                for i in courses:
+                    course_events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
+                    
+                return render(request,
+                              'timeedit/index.html',
+                              {'course' : courses[0],
+                               'events' : max(course_events_list),
+                               'form' : form}
+                )
 
+                
+                        
+                return HttpResponse('ok')
             # If course dont exist in the database
             except Course.DoesNotExist as e:
+
+                try:
+                    courses_list_id = getCourseId(course_post)  # The stupid id thats is assigned to every course
+                    events_list = []
+                    courses_list = []
                 
-                try:
-                    course_id_list = getCourseId(course_post)
-                    print(course_id_list)
-                    for i in course_id_list:
-                        try:
-                            course = Course(**getCourseInfo(i))
-                            course.save()
-                        except IOError as e:
-                            print(e)
+                    for i in courses_list_id:
+                        course = Course(**getCourseInfo(i))
+                        course.save()
+                        courses_list.append(course)
+                        print(str(course) + ' saved in database and added to list')
 
-                except TypeError as e:
-                    print(e)
-                    return render(request, 'timeedit/index.html', {'form':form, 'message':'Sorry, we cant handle your request! We are working on fixing this!'})
-
-
+                    for i in courses_list:
+                        events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
+                    
+                    return render(request,
+                                  'timeedit/index.html',
+                                  {'course' : courses_list[0],
+                                   'events' : max(events_list),
+                                   'form' : form}
+                              )
                 except IndexError as e:
                     print(e)
-                    return render(request, 'timeedit/index.html', {'form':form, 'message':'The requested course could not be found!'})
+                    return render(request, 'timeedit/index.html', {'form':form, 'message':'Course does not exist, or is not active!'})
 
 
-            print('here')
-            for i in Course.objects.all().filter(course_code=course_post):
-                events = getCourseEvents(i.semester, i.year, i.course_reg)
-                list_with_course_events.append(events)
-                list_with_courses.append(i)
-                print(len(events))
-                print(events)
-
-            if len(list_with_course_events) > 1:
-                events = max(list_with_course_events)
-            else:
-                try:
-                    events = list_with_course_events[0]
-                except IndexError as e:
-                    print(e)
-                    return render(request, 'timeedit/index.html', {'form':form, 'message':'The requested course could not be found!'})
-
-            return render(request,
-                          'timeedit/index.html',
-                          {'course' : list_with_courses[0],
-                           'events' : events,
-                           'form' : form,
-                       }
-            )
+        # If form in not valid
         else:
-            print('Not valid')
             # Logs the post if it does not pass the form validation
             invalid_post = form.data['course']
             searchLogger.info('Invalid Search Term: %s  IP Addr: %s' % (invalid_post, ip))
             
             # Renders an error response
             return render(request, 'timeedit/index.html', {'form':form, 'message':'Invalid search format!'})
-        return render(request, 'timeedit/index.html', {'form':form})
+
 
 class CourseView(generic.View):
 
