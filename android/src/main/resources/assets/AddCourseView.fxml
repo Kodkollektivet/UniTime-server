@@ -7,7 +7,6 @@
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-
 <VBox fx:id="vboxMain" prefHeight="400.0" prefWidth="300.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.AddCourseController">
    <children>
       <GridPane fx:id="addCourseGridpane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" prefHeight="165.0" prefWidth="300.0">
@@ -25,7 +24,7 @@
          <children>
             <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: black;" GridPane.columnSpan="2147483647">
                <children>
-                  <ImageView fx:id="goBackBtn" fitHeight="53.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fx:id="goBackBtn" fitHeight="53.0" fitWidth="40.0" onMouseClicked="#onGoBackClicked" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@ic_action_previous_item.png" />
                      </image>

@@ -25,6 +25,7 @@ public class Main extends Application
             MainViewController mainViewController = fxmlLoader.getController();
             mainViewController.setStageSize((int) visualBounds.getHeight(), (int) visualBounds.getWidth());
             mainViewController.setStage(primaryStage);
+            mainViewController.setMainScene(scene);
             primaryStage.setScene(scene);
             primaryStage.setTitle("UniTime");
             primaryStage.show();

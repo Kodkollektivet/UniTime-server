@@ -103,7 +103,6 @@ public class SessionHandler {
             for (Event e : eventList) {
                 eventsArrayList.add(e);
             }
-
         }
         catch (MalformedURLException e){
             e.printStackTrace();

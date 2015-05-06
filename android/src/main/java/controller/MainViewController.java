@@ -11,6 +11,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import model.Event;
 
 import java.io.IOException;
 
@@ -36,7 +37,10 @@ public class MainViewController {
     private AnchorPane anchorPaneMain;
 
 
-    private Stage stage;
+    public static Stage stage;
+
+    public static Scene mainScene;
+
 
 
     public void setStageSize(int height, int width) {
@@ -57,6 +61,7 @@ public class MainViewController {
             Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
             AddCourseController addCourseController = fxmlLoader.getController();
             addCourseController.setStageSize((int) visualBounds.getHeight(), (int) visualBounds.getWidth());
+            addCourseController.eventList = this.eventList;
             getStage().setScene(new Scene(root));
         } catch (IOException e) {
             e.printStackTrace();
@@ -72,6 +77,14 @@ public class MainViewController {
         return this.stage;
     }
 
+    public void setMainScene(Scene scene) {
+        this.mainScene = scene;
+    }
+
+    public Scene getMainScene() {
+        return this.mainScene;
+    }
+
     public ListView getEventList() {
         return eventList;
     }
@@ -79,6 +92,8 @@ public class MainViewController {
     public GridPane getGridpaneMain() {
         return gridpaneMain;
     }
+
+
 }
 
 
