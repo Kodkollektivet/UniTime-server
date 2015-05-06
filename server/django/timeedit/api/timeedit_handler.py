@@ -35,6 +35,7 @@ else:
 # year is __THISYEAR
 def getCourseEvents(season, year, course_anmalningskod):
 
+    defaultLogger.info('Retrieving course events...')
     try:
         # Url string
         url = '/web/lnu/db1/schema1/s.json?object=courseevt_%s%s-%s&tab=3' % (str(season), str(year), str(course_anmalningskod))
@@ -42,6 +43,7 @@ def getCourseEvents(season, year, course_anmalningskod):
         
         # HTTPS connection
         connection = httplib.HTTPSConnection('se.timeedit.net')
+        defaultLogger.info('Connection: %s' % connection)
         
         # HTTP header
         header = {
@@ -54,6 +56,8 @@ def getCourseEvents(season, year, course_anmalningskod):
         
         # Create the request
         connection.request('GET', url, {}, header)
+        defaultLogger.info('Succes!')
+        defaultLogger.info(' ')
         
         # Read the json data and create a python dict
         json_data = json.loads(connection.getresponse().read())
@@ -112,7 +116,10 @@ def getCourseId(course_code):
     # Try to connect
     defaultLogger.info('Requesting course id...')
     try:
-        req = requests.get('https://se.timeedit.net/web/lnu/db1/schema2/objects.txt?max=15&fr=t&partajax=t&im=f&sid=6&l=en_US&search_text='+course_code+'%20&types=5')
+        url = 'https://se.timeedit.net/web/lnu/db1/schema2/objects.txt?max=15&fr=t&partajax=t&im=f&sid=6&l=en_US&search_text='+course_code+'%20&types=5'
+        req = requests.get(url)
+
+        defaultLogger.info('URL: %s' % url)
         defaultLogger.info('REQUEST: %s' % req)
         
         data = json.loads(req.text)
