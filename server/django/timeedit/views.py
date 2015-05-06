@@ -221,7 +221,7 @@ class EventView(generic.View):
 
     
 def allCouseCodesInJSON(request):
-    return HttpResponse(json.dumps((map(lambda c: c.course_code, Course.objects.all()))),content_type='application/json')
+    return HttpResponse(json.dumps(list({ c.course_code : c for c in Course.objects.all() })),content_type='application/json')
 
         
 def allCoursesInJSON(request):
