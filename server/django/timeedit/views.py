@@ -59,8 +59,6 @@ class IndexView(generic.View):
             # Logs a valid post before it reaches api_handler
             searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
             
-            #print(course_post) #Not working with öäå
-
             # Try to get if course from database
             try:
                 # If there is only one course for the course code in database
@@ -95,7 +93,6 @@ class IndexView(generic.View):
 
                 
                         
-                return HttpResponse('ok')
             # If course dont exist in the database
             except Course.DoesNotExist as e:
 
@@ -108,7 +105,7 @@ class IndexView(generic.View):
                         course = Course(**getCourseInfo(i))
                         course.save()
                         courses_list.append(course)
-                        print(str(course) + ' saved in database and added to list')
+                        
 
                     for i in courses_list:
                         events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
