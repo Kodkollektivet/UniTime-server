@@ -73,3 +73,18 @@ body {
     font-family: 'Yanone Kaffeesatz', sans-serif;
     color: firebrick;
 }
+
+
+.ui-menu .ui-menu-item a.ui-corner-all:hover, .ui-menu .ui-menu-item a.ui-corner-all:focus, .ui-menu .ui-menu-item a.ui-corner-all:active {
+    background: #C8B081 !important;
+    color:#000;
+    border-radius:0;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    background: #C8B081;
+    border: none;
+    color:#000;
+    border-radius:0;
+    font-weight: normal;
+}
