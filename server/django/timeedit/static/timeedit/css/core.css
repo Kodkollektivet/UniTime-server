@@ -88,3 +88,15 @@ body {
     border-radius:0;
     font-weight: normal;
 }
+
+.btn-primary {
+    color: #000;
+    background-color: #4E7598;
+    border-color: #4A78A1;
+}
+
+.btn-success {
+    color: #000;
+    background-color: #56A856;
+    border-color: #63A763;
+}
