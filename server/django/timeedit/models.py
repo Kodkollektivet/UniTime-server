@@ -11,7 +11,7 @@ class Course(models.Model):
     year = models.CharField(max_length = 3) 
 
     def __unicode__(self):
-        return self.course_code
+        return self.name
 
 class Event(models.Model):
     

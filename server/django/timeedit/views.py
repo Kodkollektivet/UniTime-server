@@ -2,6 +2,7 @@
 
 import json
 import logging
+from sets import Set
 
 from django.shortcuts import render, render_to_response
 from django.views import generic
@@ -12,6 +13,10 @@ from django.core import serializers
 # Decorators
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
+
+# Exceptions
+from django.core.exceptions import *
+
 
 from ipware.ip import get_ip
 
@@ -43,8 +48,9 @@ class IndexView(generic.View):
         form = CourseForm(request.POST)
         
         searchLogger = logging.getLogger('searchLogger')
+        defaultLogger = logging.getLogger('defaultLogger')
+        errorLogger = logging.getLogger('errorLogger')
         ip = get_ip(request)
-
 
         # If form is valid
         if form.is_valid():
@@ -54,67 +60,113 @@ class IndexView(generic.View):
             
             # Logs a valid post before it reaches api_handler
             searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
+            defaultLogger.info('Searching for %s...' % course_post)
             
-            #print(course_post) #Not working with öäå
-
             # Try to get if course from database
             try:
+                defaultLogger.info('Looking for single course object in database...')
                 
-                course = Course.objects.filter(course_code=course_post)
+                # If there is only one course for the course code in database
+                course = Course.objects.get(course_code = course_post)
+                course_events = getCourseEvents(course.semester, course.year, course.course_reg)
                 
                 # Logs a fetch from the db
                 defaultLogger = logging.getLogger('defaultLogger')
                 defaultLogger.info('----------------FETCHED FROM DB---------------')
                 defaultLogger.info('Course: %s' % course_post)
+                defaultLogger.info('Single object')
                 defaultLogger.info('-----------------END OF FETCH-----------------')
                 defaultLogger.info(' ')
-
-            # If course dont exist in the database
-            except Course.DoesNotExist as e:
                 
+                return render(request,
+                              'timeedit/index.html',
+                              {'course' : course,
+                               'events' : course_events,
+                               'form' : form}
+                )
+             
+            # If there is multiple course objects in the database
+            except MultipleObjectsReturned as e:
+                defaultLogger.info('Looking for multiple course object in database...')
+                
+                courses = Course.objects.filter(course_code = course_post)
+                course_events_list = []
+                 
+                for i in courses:
+                    course_events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
+                    
+                # Logs a fetch from the db
+                defaultLogger.info('------------------FETCHED FROM DB-----------------')
+                defaultLogger.info('Course: %s' % course_post)
+                defaultLogger.info('Multiple Objects')
+                defaultLogger.info('-------------------END OF FETCH-------------------')
+                defaultLogger.info(' ')
+                
+                return render(request,
+                              'timeedit/index.html',
+                              {'course' : courses[0],
+                               'events' : max(course_events_list),
+                               'form' : form}
+                )
+                
+                        
+            # If course dont exist in the database, request it
+            except Course.DoesNotExist as e:
+                defaultLogger.info('No matching course found in database. Requesting from TimeEdit...')
+                 
                 try:
-                    course_id_list = getCourseId(course_post)
-                    print(course_id_list)
-                    for i in course_id_list:
-                        try:
-                            course = Course(**getCourseInfo(i))
-                            course.save()
-                        except IOError as e:
-                            print(e)
-
-                except TypeError as e:
-                    print(e)
-                    return render(request, 'timeedit/index.html', {'form':form, 'message':'Sorry, we cant handle your request! We are working on fixing this!'})
-
-
+                    
+                    defaultLogger.info('----------------INITIATING REQUEST----------------')
+                    
+                    courses_list_id = getCourseId(course_post)  # The stupid id thats is assigned to every course
+                    events_list = []
+                    courses_list = []
+                    
+                    for i in courses_list_id:
+                        course = Course(**getCourseInfo(i))
+                        course.save()
+                        courses_list.append(course)
+                        
+                    first_course = courses_list[0]
+                        
+                    for i in courses_list:
+                        events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
+                        
+                    defaultLogger.info('------------------END OF REQUEST-----------------')
+                        
+                    return render(request,
+                                  'timeedit/index.html',
+                                  {'course' : first_course,
+                                   'events' : max(events_list),
+                                   'form' : form}
+                              )
                 except IndexError as e:
-                    print(e)
-                    return render(request, 'timeedit/index.html', {'form':form, 'message':'The requested course could not be found!'})
+                    
+                    defaultLogger.info('Request failed due to IndexError Exception in IndexView.post')
+                    defaultLogger.info(e)
+                    defaultLogger.info('------------------END OF REQUEST------------------')
 
-            list_with_courses_events = []
-            print('here')
-            for i in Course.objects.filter(course_code=course_post):
-                events = getCourseEvents(i.semester, i.year, i.course_reg)
-                list_with_courses_events.append(events)
-                print(events)
+                    errorLogger.info('Request failed due to IndexError Exception in IndexView.post')
+                    errorLogger.info('Course: %s' % course_post)
+                    errorLogger.info(e)
+                    errorLogger.info('-')
+                    
+                    return render(request, 'timeedit/index.html', {'form':form, 'message':'Course does not exist, or is not active!'})
 
-            return render(request,
-                          'timeedit/index.html',
-                          {'course' : course[0],
-                           'events' : max(list_with_courses_events),
-                           'form' : form,
-                       }
-            )
+
+        # If form in not valid
         else:
-            print('Not valid')
             # Logs the post if it does not pass the form validation
             invalid_post = form.data['course']
             searchLogger.info('Invalid Search Term: %s  IP Addr: %s' % (invalid_post, ip))
             
             # Renders an error response
             return render(request, 'timeedit/index.html', {'form':form, 'message':'Invalid search format!'})
-        return render(request, 'timeedit/index.html', {'form':form})
 
+
+'''
+API endpoint
+'''
 class CourseView(generic.View):
 
     '''
@@ -138,31 +190,77 @@ class CourseView(generic.View):
     '''
     def post(self, request, *args, **kwargs):
 
-        # Empty form, the reason a form i here is because we do data validation with forms. Check out CourseForm inside of forms.py
+        # Create new form and pass in post info.
         form = CourseForm(request.POST)
-        print(request.POST)
-        # If form data is valid, continue. Else send error messages
+        
+        searchLogger = logging.getLogger('searchLogger')
+        ip = get_ip(request)
+
+        # If form is valid
         if form.is_valid():
 
-            # Get the cleaned data from the form.
-            course = form.cleaned_data['course'].upper()
-
-            # Try to get the object from the database
+            # variable with cleaned data from the form
+            course_post = form.cleaned_data['course'].upper()
+            
+            # Logs a valid post before it reaches api_handler
+            searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
+            
+            # Try to get if course from database
             try:
+                # If there is only one course for the course code in database
+                course = Course.objects.get(course_code = course_post)
+                # Logs a fetch from the db
+                defaultLogger = logging.getLogger('defaultLogger')
+                defaultLogger.info('----------------FETCHED FROM DB---------------')
+                defaultLogger.info('Course: %s' % course_post)
+                defaultLogger.info('-----------------END OF FETCH-----------------')
+                defaultLogger.info(' ')
+                return HttpResponse(json.dumps(serializers.serialize('json', [course])), content_type='application/json')
 
-                # If object is found, serialize it and send it as json
-                return HttpResponse(json.dumps(serializers.serialize('json', [Course.objects.get(course_code=course),])), content_type='application/json')
+            # If there is mulit course objects in the database
+            except MultipleObjectsReturned as e:
+                courses = Course.objects.filter(course_code = course_post)
 
-            # If object not found in database, send this
+                return HttpResponse(json.dumps(serializers.serialize('json', [courses[0]])), content_type='application/json')
+
+
+            # If course dont exist in the database
             except Course.DoesNotExist as e:
 
-                # Send a simple json object with error message
-                return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
+                try:
+                    courses_list_id = getCourseId(course_post)  # The stupid id thats is assigned to every course
+                    courses_list = []
+                
+                    for i in courses_list_id:
+                        course = Course(**getCourseInfo(i))
+                        course.save()
+                        courses_list.append(course)
+                        
+                    try:
+                        return HttpResponse(json.dumps(serializers.serialize('json', [courses_list[0]])), content_type='application/json')
+                    
+                    except ValueError as e:
+                        print(e)
+                        return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
 
-        # If form is invalid, send simple json object
-        return HttpResponse(json.dumps({'message':'Invalid input'}), content_type='application/json')
+                except IndexError as e:
+                    print(e)
+                    return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
 
-    
+
+        # If form in not valid
+        else:
+            # Logs the post if it does not pass the form validation
+            invalid_post = form.data['course']
+            searchLogger.info('Invalid Search Term: %s  IP Addr: %s' % (invalid_post, ip))
+            
+            # Renders an error response
+            return HttpResponse(json.dumps({'message':'Invalid search format!'}))
+
+
+'''
+API endpoint
+'''
 class EventView(generic.View):
     
     '''
@@ -175,39 +273,95 @@ class EventView(generic.View):
 
     
     def post(self, request, *args, **kwargs):
-        pass
-        # Empty form, the reason a form i here is because we do data validation with forms. Check out CourseForm inside of forms.py
-        form = CourseForm(request.POST)
 
-        # If form data is valid, continue. Else send error messages
+        # Create new form and pass in post info.
+        form = CourseForm(request.POST)
+        
+        searchLogger = logging.getLogger('searchLogger')
+        ip = get_ip(request)
+
+        # If form is valid
         if form.is_valid():
 
-            # Get the cleaned data from the form.
-            course = form.cleaned_data['course'].upper()
-
-            # Try to get the object from the database
+            # variable with cleaned data from the form
+            course_post = form.cleaned_data['course'].upper()
+            
+            # Logs a valid post before it reaches api_handler
+            searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
+            
+            # Try to get if course from database
             try:
-                # Course object from database
-                course_object = Course.objects.get(course_code=course)
-                
-                # If object is found, serialize it to the getCourseEvents function
-                # This function calls LNUs timeedit API, this API returns JSON
-                return HttpResponse(json.dumps(getCourseEvents(course_object.season, course_object.year, course_object.course_anmalningskod)), content_type='application/json')
+                # If there is only one course for the course code in database
+                course = Course.objects.get(course_code = course_post)
+                # Logs a fetch from the db
+                defaultLogger = logging.getLogger('defaultLogger')
+                defaultLogger.info('----------------FETCHED FROM DB---------------')
+                defaultLogger.info('Course: %s' % course_post)
+                defaultLogger.info('-----------------END OF FETCH-----------------')
+                defaultLogger.info(' ')
+                return HttpResponse(json.dumps(getCourseEvents(course.semester, course.year, course.course_reg)), content_type='application/json')
 
-            # If object not found in database, send this
+
+
+            # If there is mulit course objects in the database
+            except MultipleObjectsReturned as e:
+                courses = Course.objects.filter(course_code = course_post)
+                course_events_list = []
+                
+                for i in courses:
+                    course_events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
+                    
+
+                return HttpResponse(json.dumps(max(course_events_list)), content_type='application/json')
+
+
+            # If course dont exist in the database
             except Course.DoesNotExist as e:
 
-                # Send a simple json object with error message
-                return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
+                try:
+                    courses_list_id = getCourseId(course_post)  # The stupid id thats is assigned to every course
+                    events_list = []
+                    courses_list = []
+                
+                    for i in courses_list_id:
+                        course = Course(**getCourseInfo(i))
+                        course.save()
+                        courses_list.append(course)
+                        
 
-        # If form is invalid, send simple json object
-        return HttpResponse(json.dumps({'message':'Invalid input'}), content_type='application/json')
+                    for i in courses_list:
+                        events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
+                    
+                    try:
+                        return HttpResponse(json.dumps(max(events_list)), content_type='application/json')
+                    
+                    except ValueError as e:
+                        print(e)
+                        return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
 
-    
+                except IndexError as e:
+                    print(e)
+                    return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
+
+
+        # If form in not valid
+        else:
+            # Logs the post if it does not pass the form validation
+            invalid_post = form.data['course']
+            searchLogger.info('Invalid Search Term: %s  IP Addr: %s' % (invalid_post, ip))
+            
+            # Renders an error response
+            return HttpResponse({'message':'Invalid search format!'})
+
+'''
+Endpoint for web gui autocomplete
+'''
 def allCouseCodesInJSON(request):
-    return HttpResponse(json.dumps(map(lambda c: c.course_code, Course.objects.all())),content_type='application/json')
+    return HttpResponse(json.dumps(list({ c.course_code : c for c in Course.objects.all() })),content_type='application/json')
 
-        
+'''
+API endpoint
+'''
 def allCoursesInJSON(request):
     return HttpResponse(json.dumps(serializers.serialize('json', Course.objects.all())), content_type='application/json')
 
