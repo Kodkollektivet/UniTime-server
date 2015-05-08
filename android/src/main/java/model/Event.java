@@ -5,7 +5,7 @@ import java.time.LocalDate;
 /**
  * Created by otto on 2015-05-03.
  */
-public class Event implements Comparable{
+public class Event implements Comparable<Event> {
 
     private String startdate;
 
@@ -67,9 +67,9 @@ public class Event implements Comparable{
     public void setRoom(String room) {
         this.room = room;
     }
-
-    public int compareTo(Object event) {
-        Event e = (Event) event;
-        return LocalDate.parse(this.starttime).compareTo(LocalDate.parse(e.starttime));
+    @Override
+    public int compareTo(Event event) {
+        return LocalDate.parse(this.startdate).compareTo(LocalDate.parse(event.startdate));
     }
+
 }

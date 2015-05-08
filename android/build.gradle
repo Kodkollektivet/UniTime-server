@@ -8,28 +8,30 @@ buildscript {
     }
 }
 
-apply plugin: 'org.javafxports.jfxmobile'
-apply plugin: 'java'
-apply plugin: 'maven'
-
-mainClassName = 'MainView'
-version = '8u45'
-
-repositories {
-    mavenCentral()
+    apply plugin: 'org.javafxports.jfxmobile'
+    apply plugin: 'java'
 
 
-}
-dependencies {
-    compile 'org.apache.httpcomponents:httpcomponents-core:4.4.1'
-}
+    mainClassName = 'Main'
 
-
-jfxmobile {
-    ios {
-        forceLinkClasses = ['ensemble.**.*']
+    repositories {
+        jcenter()
     }
-    android {
-        applicationPackage = 'org.javafxports.ensemble'
+
+    dependencies {
+        compile 'org.apache.httpcomponents:httpcomponents-core:4.4.1'
+        compile 'org.apache.httpcomponents:httpcomponents-client:4.4.1'
     }
-}
+
+    jar {
+        from configurations.compile.collect { zipTree it }
+    }
+
+    jfxmobile {
+        ios {
+            forceLinkClasses = ['ensemble.**.*']
+        }
+        android {
+            applicationPackage = 'org.javafxports.ensemble'
+        }
+    }

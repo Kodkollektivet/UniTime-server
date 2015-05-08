@@ -29,6 +29,7 @@ public class SessionHandler {
     public ArrayList<Course> courseInfoArrayList = new ArrayList<>();
     public ArrayList<Event> eventsArrayList = new ArrayList<>();
 
+
     // Empty contructor
     public SessionHandler() {}
 
@@ -37,7 +38,7 @@ public class SessionHandler {
 
         try {
             Course[] courseList;
-            String urlName = "http://unitime.se:8000/api/course/";
+            String urlName = "http://unitime.se/api/course/";
             URL url = new URL(urlName);
             HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
 
@@ -68,8 +69,8 @@ public class SessionHandler {
         catch (MalformedURLException e){
             e.printStackTrace();
         }
-        catch (IOException e){
-            e.printStackTrace();
+        catch (IOException ev){
+            ev.printStackTrace();
         }
 
 
@@ -82,7 +83,7 @@ public class SessionHandler {
 
         try {
             Event[] eventList;
-            String urlName = "http://unitime.se:8000/api/event/";
+            String urlName = "http://unitime.se/api/event/";
             ObjectMapper mapper = new ObjectMapper();
             String params = "course=" + courseCode;
 
@@ -104,11 +105,12 @@ public class SessionHandler {
                 eventsArrayList.add(e);
             }
         }
+
         catch (MalformedURLException e){
             e.printStackTrace();
         }
-        catch (IOException e){
-            e.printStackTrace();
+        catch (IOException ev){
+            ev.printStackTrace();
         }
 
 

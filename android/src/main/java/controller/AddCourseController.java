@@ -79,7 +79,6 @@ public class AddCourseController {
             eventController.getEventRoomLabel().setText(event.getRoom());
             eventController.getEventTeacherLabel().setText(event.getTeacher());
             eventController.getEventTimeLabel().setText(event.getStarttime() + "-" + event.getEndtime());
-            eventController.getEventStackPane().setStyle("-fx-background-color: red;");
             eventList.getItems().add(root);
         } catch (IOException e) {
             e.printStackTrace();
