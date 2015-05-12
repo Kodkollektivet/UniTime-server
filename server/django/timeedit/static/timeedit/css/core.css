@@ -74,6 +74,12 @@ body {
     color: firebrick;
 }
 
+#id_course{
+    font-family: "Yanone Kaffeesatz", sans-serif;
+    font-size: 25px;
+    background-color: #EAE5D0;
+}
+
 
 .ui-menu .ui-menu-item a.ui-corner-all:hover, .ui-menu .ui-menu-item a.ui-corner-all:focus, .ui-menu .ui-menu-item a.ui-corner-all:active {
     background: #C8B081 !important;

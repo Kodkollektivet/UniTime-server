@@ -38,6 +38,15 @@ class IndexView(generic.View):
         # Create empty form
         form = CourseForm()
 
+        # Getting data from session if a session exists
+        try:
+            course = request.session['course']
+            print(course)
+            form = CourseForm(initial={'course': course})
+
+        except KeyError:
+            pass
+
         # Return empty form with request, template, form
         return render(request, 'timeedit/index.html', {'form':form})
 
@@ -57,7 +66,13 @@ class IndexView(generic.View):
 
             # variable with cleaned data from the form
             course_post = form.cleaned_data['course'].upper()
-            
+
+            # Set seesion
+            try:
+                request.session['course'] = course_post
+            except KeyError:
+                pass
+
             # Logs a valid post before it reaches api_handler
             searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
             defaultLogger.info('Searching for %s...' % course_post)
