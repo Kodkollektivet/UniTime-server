@@ -39,13 +39,9 @@ class IndexView(generic.View):
         form = CourseForm()
 
         # Getting data from session if a session exists
-        try:
-            course = request.session['course']
-            print(course)
-            form = CourseForm(initial={'course': course})
 
-        except KeyError:
-            pass
+        if request.session['course']:
+            form = CourseForm(initial={'course': request.session['course']})
 
         # Return empty form with request, template, form
         return render(request, 'timeedit/index.html', {'form':form})
@@ -68,10 +64,8 @@ class IndexView(generic.View):
             course_post = form.cleaned_data['course'].upper()
 
             # Set seesion
-            try:
+            if request.session['course']:
                 request.session['course'] = course_post
-            except KeyError:
-                pass
 
             # Logs a valid post before it reaches api_handler
             searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
@@ -82,7 +76,7 @@ class IndexView(generic.View):
                 defaultLogger.info('Looking for single course object in database...')
                 
                 # If there is only one course for the course code in database
-                course = Course.objects.get(course_code = course_post)
+                course = Course.objects.get(course_code=course_post)
                 course_events = getCourseEvents(course.semester, course.year, course.course_reg)
                 
                 # Logs a fetch from the db
@@ -123,8 +117,7 @@ class IndexView(generic.View):
                                'events' : max(course_events_list),
                                'form' : form}
                 )
-                
-                        
+
             # If course dont exist in the database, request it
             except Course.DoesNotExist as e:
                 defaultLogger.info('No matching course found in database. Requesting from TimeEdit...')
@@ -168,7 +161,6 @@ class IndexView(generic.View):
                     
                     return render(request, 'timeedit/index.html', {'form':form, 'message':'Course does not exist, or is not active!'})
 
-
         # If form in not valid
         else:
             # Logs the post if it does not pass the form validation
@@ -199,7 +191,6 @@ class CourseView(generic.View):
         # Returns json of all of the Courses that are saved in the database! Be aware of big data!
         return HttpResponse(json.dumps(serializers.serialize('json', Course.objects.all())), content_type='application/json')
 
-    
     '''
     When POST here, only the specific course info will be sen
     '''
@@ -238,7 +229,6 @@ class CourseView(generic.View):
 
                 return HttpResponse(json.dumps(serializers.serialize('json', [courses[0]])), content_type='application/json')
 
-
             # If course dont exist in the database
             except Course.DoesNotExist as e:
 
@@ -262,7 +252,6 @@ class CourseView(generic.View):
                     print(e)
                     return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
 
-
         # If form in not valid
         else:
             # Logs the post if it does not pass the form validation
@@ -278,15 +267,14 @@ API endpoint
 '''
 class EventView(generic.View):
     
-    '''
+    """
     This method is for accepting client requests that dont provide a csrf token.
-    '''
+    """
     
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super(EventView, self).dispatch(request, *args, **kwargs)
 
-    
     def post(self, request, *args, **kwargs):
 
         # Create new form and pass in post info.
@@ -316,8 +304,6 @@ class EventView(generic.View):
                 defaultLogger.info(' ')
                 return HttpResponse(json.dumps(getCourseEvents(course.semester, course.year, course.course_reg)), content_type='application/json')
 
-
-
             # If there is mulit course objects in the database
             except MultipleObjectsReturned as e:
                 courses = Course.objects.filter(course_code = course_post)
@@ -325,10 +311,8 @@ class EventView(generic.View):
                 
                 for i in courses:
                     course_events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
-                    
 
                 return HttpResponse(json.dumps(max(course_events_list)), content_type='application/json')
-
 
             # If course dont exist in the database
             except Course.DoesNotExist as e:
@@ -342,7 +326,6 @@ class EventView(generic.View):
                         course = Course(**getCourseInfo(i))
                         course.save()
                         courses_list.append(course)
-                        
 
                     for i in courses_list:
                         events_list.append(getCourseEvents(i.semester, i.year, i.course_reg))
@@ -352,12 +335,11 @@ class EventView(generic.View):
                     
                     except ValueError as e:
                         print(e)
-                        return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
+                        return HttpResponse(json.dumps({'message': 'Can not find that course'}), content_type='application/json')
 
                 except IndexError as e:
                     print(e)
-                    return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
-
+                    return HttpResponse(json.dumps({'message': 'Can not find that course'}), content_type='application/json')
 
         # If form in not valid
         else:
@@ -372,7 +354,7 @@ class EventView(generic.View):
 Endpoint for web gui autocomplete
 '''
 def allCouseCodesInJSON(request):
-    return HttpResponse(json.dumps(list({ c.course_code : c for c in Course.objects.all() })),content_type='application/json')
+    return HttpResponse(json.dumps(list({c.course_code: c for c in Course.objects.all()})),content_type='application/json')
 
 '''
 API endpoint
