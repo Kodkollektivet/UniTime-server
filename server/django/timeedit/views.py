@@ -2,13 +2,12 @@
 
 import json
 import logging
-from sets import Set
 
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render
 from django.views import generic
-from django.http import HttpResponse, HttpResponseRedirect
-from django.core.urlresolvers import reverse_lazy, reverse
+from django.http import HttpResponse
 from django.core import serializers
+from django.views.generic import TemplateView
 
 # Decorators
 from django.views.decorators.csrf import csrf_exempt
@@ -26,6 +25,27 @@ from .api.timeedit_handler import getCourseEvents, getCourseId, getCourseInfo
 from .scrapper.lnu_course_page_scrapper import getCourseInfo_scrapper, getAllCourseCodes_scrapper
 
 
+def createJsonCourse(listIn):
+
+    return_data = []
+
+    for course in listIn:
+        data = {
+            'name': course.name,
+            'course_code': course.course_code,
+            'course_id': course.course_id,
+            'semester': course.semester,
+            'url': course.url,
+            'year': course.year
+        }
+        return_data.append(data)
+
+    return return_data
+
+
+class MobileTemplateView(TemplateView):
+    template_name = 'timeedit/mobile.html'
+
 class IndexView(generic.View):
 
     '''
@@ -38,13 +58,8 @@ class IndexView(generic.View):
         # Create empty form
         form = CourseForm()
 
-        # Getting data from session if a session exists
-
-        if request.session['course']:
-            form = CourseForm(initial={'course': request.session['course']})
-
-        # Return empty form with request, template, form
-        return render(request, 'timeedit/index.html', {'form':form})
+        # Return form
+        return render(request, 'timeedit/index.html', {'form': form})
 
     # POST, 
     def post(self, request, *args, **kwargs):
@@ -64,8 +79,11 @@ class IndexView(generic.View):
             course_post = form.cleaned_data['course'].upper()
 
             # Set seesion
-            if request.session['course']:
-                request.session['course'] = course_post
+            if 'course' in request.session.keys():
+                if course_post not in request.session['course']:
+                    request.session['course'].append(course_post)
+            else:
+                request.session['course'] = []
 
             # Logs a valid post before it reaches api_handler
             searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
@@ -189,7 +207,7 @@ class CourseView(generic.View):
     def get(self, request, *args, **kwargs):
         
         # Returns json of all of the Courses that are saved in the database! Be aware of big data!
-        return HttpResponse(json.dumps(serializers.serialize('json', Course.objects.all())), content_type='application/json')
+        return HttpResponse(json.dumps(createJsonCourse(Course.objects.all())), content_type='application/json')
 
     '''
     When POST here, only the specific course info will be sen
@@ -214,20 +232,23 @@ class CourseView(generic.View):
             # Try to get if course from database
             try:
                 # If there is only one course for the course code in database
-                course = Course.objects.get(course_code = course_post)
+                course = Course.objects.get(course_code=course_post)
                 # Logs a fetch from the db
                 defaultLogger = logging.getLogger('defaultLogger')
                 defaultLogger.info('----------------FETCHED FROM DB---------------')
                 defaultLogger.info('Course: %s' % course_post)
                 defaultLogger.info('-----------------END OF FETCH-----------------')
                 defaultLogger.info(' ')
-                return HttpResponse(json.dumps(serializers.serialize('json', [course])), content_type='application/json')
+                print('\nhere1\n')
+                print('FAN')
+
+                return HttpResponse(json.dumps(createJsonCourse([course])), content_type='application/json')
 
             # If there is mulit course objects in the database
             except MultipleObjectsReturned as e:
-                courses = Course.objects.filter(course_code = course_post)
-
-                return HttpResponse(json.dumps(serializers.serialize('json', [courses[0]])), content_type='application/json')
+                courses = Course.objects.filter(course_code=course_post)
+                print('\nhere2\n')
+                return HttpResponse(json.dumps(createJsonCourse([courses[0]])), content_type='application/json')
 
             # If course dont exist in the database
             except Course.DoesNotExist as e:
@@ -242,7 +263,8 @@ class CourseView(generic.View):
                         courses_list.append(course)
                         
                     try:
-                        return HttpResponse(json.dumps(serializers.serialize('json', [courses_list[0]])), content_type='application/json')
+                        print('\nhere2\n')
+                        return HttpResponse(json.dumps(createJsonCourse([courses_list[0]])), content_type='application/json')
                     
                     except ValueError as e:
                         print(e)
@@ -354,7 +376,8 @@ class EventView(generic.View):
 Endpoint for web gui autocomplete
 '''
 def allCouseCodesInJSON(request):
-    return HttpResponse(json.dumps(list({c.course_code: c for c in Course.objects.all()})),content_type='application/json')
+    #return HttpResponse(json.dumps(list({c.course_code: c for c in Course.objects.all()})),content_type='application/json')
+    return HttpResponse(json.dumps(list(request.session['course'])),content_type='application/json')
 
 '''
 API endpoint
