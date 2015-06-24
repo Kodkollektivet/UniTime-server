@@ -239,15 +239,12 @@ class CourseView(generic.View):
                 defaultLogger.info('Course: %s' % course_post)
                 defaultLogger.info('-----------------END OF FETCH-----------------')
                 defaultLogger.info(' ')
-                print('\nhere1\n')
-                print('FAN')
 
                 return HttpResponse(json.dumps(createJsonCourse([course])), content_type='application/json')
 
             # If there is mulit course objects in the database
             except MultipleObjectsReturned as e:
                 courses = Course.objects.filter(course_code=course_post)
-                print('\nhere2\n')
                 return HttpResponse(json.dumps(createJsonCourse([courses[0]])), content_type='application/json')
 
             # If course dont exist in the database
@@ -268,11 +265,11 @@ class CourseView(generic.View):
                     
                     except ValueError as e:
                         print(e)
-                        return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
+                        return HttpResponse(json.dumps({'message': 'Can not find that course'}), content_type='application/json', status=406)
 
                 except IndexError as e:
                     print(e)
-                    return HttpResponse(json.dumps({'message':'Can not find that course'}), content_type='application/json')
+                    return HttpResponse(json.dumps({'message': 'Can not find that course'}), content_type='application/json', status=406)
 
         # If form in not valid
         else:
@@ -281,7 +278,7 @@ class CourseView(generic.View):
             searchLogger.info('Invalid Search Term: %s  IP Addr: %s' % (invalid_post, ip))
             
             # Renders an error response
-            return HttpResponse(json.dumps({'message':'Invalid search format!'}))
+            return HttpResponse(json.dumps({'message': 'Invalid search format!'}), content_type='application/json', status=406)
 
 
 '''
