@@ -63,13 +63,14 @@ def getCourseEvents(season, year, course_anmalningskod):
         json_data = json.loads(connection.getresponse().read())
         
         # Pretty print it, only use thins when looking for all data
-        #pp = pprint.PrettyPrinter(indent=4)
-        #pp.pprint(json_data['messages'])
+        pp = pprint.PrettyPrinter(indent=4)
+        pp.pprint(json_data)
         
         event_list = []
         try:
             json_data['messages']
         except KeyError as e:
+            print("Error here! Nothing dager!")
             pass
         
         try:
@@ -80,6 +81,7 @@ def getCourseEvents(season, year, course_anmalningskod):
                     'starttime':'',
                     'endtime':'',
                     'info':'',
+                    'desc':'',
                     'room':'',
                     'teacher':'',
                 }
@@ -89,8 +91,11 @@ def getCourseEvents(season, year, course_anmalningskod):
                 data['endtime'] = i['endtime']
                 data['info'] = i['columns'][5]
                 data['room'] = i['columns'][2]
-                data['teacher'] = i['columns'][3]                            
+                data['teacher'] = i['columns'][3]
+                data['desc'] = i['columns'][8]
+
                 event_list.append(data)
+
             return event_list
         
         except KeyError as e:
@@ -107,6 +112,7 @@ def getCourseEvents(season, year, course_anmalningskod):
         'endtime':'',
         'info':'This course is inactive.',
         'room':'',
+        'desc':'',
         'teacher':'',
     },]
 
@@ -117,6 +123,7 @@ def getCourseId(course_code):
     defaultLogger.info('Requesting course id...')
     try:
         url = 'https://se.timeedit.net/web/lnu/db1/schema2/objects.txt?max=15&fr=t&partajax=t&im=f&sid=6&l=en_US&search_text='+course_code+'%20&types=5'
+        #'https://se.timeedit.net/web/lnu/db1/schema2/objects.txt?max=15&fr=t&partajax=t&im=f&sid=6&l=en_US&search_text=1BD105%20&types=5'
         req = requests.get(url)
 
         defaultLogger.info('URL: %s' % url)
@@ -167,7 +174,7 @@ def getCourseInfo(course_id):
         defaultLogger.info('REQUEST: %s' % req)
         
         pp = pprint.PrettyPrinter(indent=4)
-        #pp.pprint(req.text)
+        pp.pprint(req.text)
 
         data = json.loads(req.text)
 
