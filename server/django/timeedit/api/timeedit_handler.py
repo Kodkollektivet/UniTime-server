@@ -63,16 +63,11 @@ def getCourseEvents(season, year, course_anmalningskod):
         json_data = json.loads(connection.getresponse().read())
         
         # Pretty print it, only use thins when looking for all data
-        pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(json_data)
+        #pp = pprint.PrettyPrinter(indent=4)
+        #pp.pprint(json_data)
         
         event_list = []
-        try:
-            json_data['messages']
-        except KeyError as e:
-            print("Error here! Nothing dager!")
-            pass
-        
+
         try:
             for i in json_data['reservations']:
                 
