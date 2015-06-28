@@ -2,10 +2,17 @@ from django.db import models
 
 class Course(models.Model):
 
-    name = models.CharField(max_length=254, blank=True)  # The name of the course
+    name_en = models.CharField(max_length=254, blank=True)  # The name of the course
+    name_sv = models.CharField(max_length=254, blank=True)  # The name of the course
+    syllabus_sv = models.CharField(max_length=254, blank=True)
+    syllabus_en = models.CharField(max_length=254, blank=True)
     course_code = models.CharField(max_length = 10) # 1DV008
     course_id = models.CharField(max_length = 10, blank=True, unique=True) # 60380
     course_reg = models.CharField(max_length = 10, blank=True, unique=True) # ex: 67504
+    course_points = models.CharField(max_length = 10, default='')
+    course_location = models.CharField(max_length=254, default='')
+    course_language = models.CharField(max_length=100, default='')
+    course_speed = models.CharField(max_length=20, default='')
     semester = models.CharField(max_length = 2)       # HT / VT
     url = models.CharField(max_length = 254, blank=True)   # html url
     year = models.CharField(max_length = 3) 
