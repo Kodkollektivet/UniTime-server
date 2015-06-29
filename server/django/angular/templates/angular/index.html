@@ -1,0 +1,86 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>UniTime</title>
+
+    <!-- Scripts Start -->
+    <script src="{% static 'angular/js/lib/jquery-2.1.4.min.js' %}"></script>
+
+    <script src="{% static 'angular/js/lib/angular.js' %}"></script>
+    <script src="{% static 'angular/js/lib/angular-route.js' %}"></script>
+    <script src="{% static 'angular/js/lib/angular-resource.js' %}"></script>
+    <script src="{% static 'angular/js/lib/angular-sanitize.min.js' %}"></script>
+    <script src="{% static 'angular/js/lib/angular-ui-router.min.js' %}"></script>
+    <script src="{% static 'angular/js/lib/angular-cookies.js' %}"></script>
+    <script src="{% static 'angular/js/lib/angular-ui-tinymce.js' %}"></script>
+
+    <script src="{% static 'angular/js/lib/bootstrap.min.js' %}"></script>
+
+    <script src="{% static 'angular/js/lib/tinymce.min.js' %}"></script>
+
+    <script src="{% static 'angular/js/lib/underscore-min.js' %}"></script>
+
+    <script src="{% static 'angular/js/app.js' %}"></script>
+    <script src="{% static 'angular/js/services.js' %}"></script>
+    <script src="{% static 'angular/js/controllers.js' %}"></script>
+
+
+    <!-- Scripts End -->
+
+    <!-- CSS Start -->
+    <link rel="stylesheet" type="text/css" href="{% static 'angular/css/bootstrap.css' %}">
+    <!-- CSS End -->
+
+</head>
+<body ng-app="unitime">
+
+<div class="container">
+
+    <!-- Coockies warning -->
+    <div class="alert alert-warning">
+        <a href="#" class="close" data-dismiss="alert">
+            This service is based on coockies, by using this service you agree that we store coockies in you browser.
+        </a>
+    </div>
+
+
+    <form class="form-inline">
+        <div class="form-group">
+            <input type="text" class="form-control" ng-model="filterCourses" placeholder="Filter course">
+        </div>
+    </form>
+
+
+        <div ng-controller="unicontrol">
+
+            <div ng-repeat="event in events">
+                [[ event ]]
+            </div>
+
+              <h3>Cookies</h3>
+            <pre>[[ list|json]]</pre>
+
+            <ul class="list-group">
+                <div ng-repeat="course in courses | filter : filterCourses">
+                    <div ng-if="$index % 2 == 0">
+                        <li ng-click="saveToCoockie(course)" class="list-group-item list-group-item-info" style="color: black;">[[ course.name_en ]]</li>
+                    </div>
+                    <div ng-if="$index % 2 != 0">
+                        <li ng-click="getEvents(course.course_code)" class="list-group-item">[[ course.name_en ]]</li>
+                    </div>
+                </div>
+            </ul>
+        </div>
+
+
+</div> <!-- Container ends -->
+</body>
+</html>
+
+
+
+
