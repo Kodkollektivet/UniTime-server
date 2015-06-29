@@ -33,7 +33,7 @@ else:
 # course here is Anmälningskod
 # season is VT or HT
 # year is __THISYEAR
-def getCourseEvents(season, year, course_anmalningskod):
+def getCourseEvents(season, year, course_anmalningskod, course_code):
 
     defaultLogger.info('Retrieving course events...')
     try:
@@ -79,6 +79,7 @@ def getCourseEvents(season, year, course_anmalningskod):
                     'desc':'',
                     'room':'',
                     'teacher':'',
+                    'course_code': '',
                 }
                 
                 data['startdate'] = i['startdate']
@@ -88,6 +89,7 @@ def getCourseEvents(season, year, course_anmalningskod):
                 data['room'] = i['columns'][2]
                 data['teacher'] = i['columns'][3]
                 data['desc'] = i['columns'][8]
+                data['course_code'] = course_code
 
                 event_list.append(data)
 
@@ -99,8 +101,7 @@ def getCourseEvents(season, year, course_anmalningskod):
     except ValueError as e:
         pass
 
-    
-    
+
     return [{
         'startdate':'',
         'starttime':'',
@@ -109,6 +110,7 @@ def getCourseEvents(season, year, course_anmalningskod):
         'room':'',
         'desc':'',
         'teacher':'',
+        'course_code':'',
     },]
 
 
