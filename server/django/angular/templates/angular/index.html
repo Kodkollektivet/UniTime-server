@@ -1,6 +1,6 @@
 {% load staticfiles %}
 <!DOCTYPE html>
-<html>
+<html style="height: 100%; margin: 0; padding: 0;">
 <head lang="en">
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -36,48 +36,95 @@
     <!-- CSS End -->
 
 </head>
-<body ng-app="unitime">
+<body ng-app="unitime" style="height: 100%; margin: 0; padding: 0;">
 
-<div class="container">
+
 
     <!-- Coockies warning -->
     <div class="alert alert-warning">
         <a href="#" class="close" data-dismiss="alert">
-            This service is based on coockies, by using this service you agree that we store coockies in you browser.
+            <!--This service is based on coockies, by using this service you agree that we store coockies in you browneye.-->
         </a>
     </div>
 
 
-    <form class="form-inline">
-        <div class="form-group">
-            <input type="text" class="form-control" ng-model="filterCourses" placeholder="Filter course">
-        </div>
-    </form>
+
 
 
         <div ng-controller="unicontrol">
 
-            <div ng-repeat="event in events">
-                [[ event ]]
+            <div class="container">
+            <div class="row">
+                <h3>Cookies</h3>
+                <pre>[[ list|json]]</pre>
+            </div>
             </div>
 
-              <h3>Cookies</h3>
-            <pre>[[ list|json]]</pre>
+            <div class="col-lg-12 col-md-12">
+                <div ng-repeat="course in selected_courses">
+                    <a ng-click="removeCourse(course)">
+                        [[ course.name_sv ]]
+                    </a>
+                </div>
+            </div>
 
-            <ul class="list-group">
-                <div ng-repeat="course in courses | filter : filterCourses">
-                    <div ng-if="$index % 2 == 0">
-                        <li ng-click="saveToCoockie(course)" class="list-group-item list-group-item-info" style="color: black;">[[ course.name_en ]]</li>
-                    </div>
-                    <div ng-if="$index % 2 != 0">
-                        <li ng-click="getEvents(course.course_code)" class="list-group-item">[[ course.name_en ]]</li>
+            <!-- Courses -->
+            <div class="col-lg-6 col-md-6">
+
+                <!-- Filter Courses Input -->
+                <form class="form-inline">
+                    <input type="text" class="form-control" ng-model="filterCourses" placeholder="Filter course" autofocus style="width: 100%">
+                </form><!-- Filter Courses Input End -->
+                <div class="list-group" style="height: 200pt; overflow: scroll; overflow-x: hidden;">
+                    <div ng-repeat="course in courses | filter : filterCourses">
+                        <div ng-if="$index % 2 == 0">
+                            <a href="" class="list-group-item list-group-item-success" ng-click="getCourse(course.course_code)" style="color: black;">
+                                ([[course.course_code]]) [[ course.name_en ]]
+                            </a>
+
+                        </div>
+                        <div ng-if="$index % 2 != 0">
+                            <a href="" class="list-group-item list-group-item-danger" ng-click="getCourse(course.course_code)" style="color: black;">
+                                ([[course.course_code]]) [[ course.name_en ]]
+                            </a>
+                        </div>
                     </div>
                 </div>
-            </ul>
+            </div><!-- Courses Ends -->
+
+            <!-- Events -->
+            <div class="col-lg-6 col-md-6">
+                <ul class="list-group" style="height: 300pt; overflow: scroll; overflow-x: hidden;">
+                    <div ng-repeat="event in events | orderBy: 'startdate'">
+
+                        <div ng-if="$index % 2 == 0">
+                            <li class="list-group-item list-group-item-warning" style="color: black;">
+                                <div>[[ event.info ]]</div>
+                                <div>[[ event.startdate ]]</div>
+                                <div>[[ event.room ]]</div>
+                            </li>
+                        </div>
+                        <div ng-if="$index % 2 != 0">
+                            <li class="list-group-item" style="color: black;">
+                                <div>[[ event.info ]]</div>
+                                <div>[[ event.startdate ]]</div>
+                                <div>[[ event.room ]]</div>
+                            </li>
+                        </div>
+
+                    </div>
+                </ul>
+            </div>
+
+              <!--<h3>Cookies</h3>-->
+            <!--<pre>[[ list|json]]</pre>-->
+
+
+
         </div>
 
 
-</div> <!-- Container ends -->
+
 </body>
 </html>
 
