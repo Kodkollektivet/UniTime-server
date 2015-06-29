@@ -22,7 +22,6 @@ from ipware.ip import get_ip
 from .models import Course, Event
 from .forms import EventForm, CourseForm
 from .api.timeedit_handler import getCourseEvents, getCourseId, getCourseInfo
-from .scrapper.lnu_course_page_scrapper import getCourseInfo_scrapper, getAllCourseCodes_scrapper
 
 
 def createJsonCourse(listIn):
@@ -31,9 +30,16 @@ def createJsonCourse(listIn):
 
     for course in listIn:
         data = {
-            'name': course.name,
+            'name_sv': course.name_sv,
+            'name_en': course.name_en,
             'course_code': course.course_code,
             'course_id': course.course_id,
+            'course_points': course.course_points,
+            'course_location': course.course_location,
+            'course_language': course.course_language,
+            'course_speed': course.course_speed,
+            'syllabus_sv': course.syllabus_sv,
+            'syllabus_en': course.syllabus_en,
             'semester': course.semester,
             'url': course.url,
             'year': course.year
@@ -42,9 +48,6 @@ def createJsonCourse(listIn):
 
     return return_data
 
-
-class MobileTemplateView(TemplateView):
-    template_name = 'timeedit/mobile.html'
 
 class IndexView(generic.View):
 
@@ -207,7 +210,34 @@ class CourseView(generic.View):
     def get(self, request, *args, **kwargs):
         
         # Returns json of all of the Courses that are saved in the database! Be aware of big data!
-        return HttpResponse(json.dumps(createJsonCourse(Course.objects.all())), content_type='application/json')
+
+        courses = Course.objects.all()
+
+        buffer_list = []
+        for c in courses:
+            if c not in buffer_list:
+                buffer_list.append(c)
+            else:
+                pass
+
+        course_list = []
+        for course in buffer_list:
+            data = {
+                'course_code': course.course_code,
+                'name_en': course.name_en,
+                'name_sv': course.name_sv,
+            }
+
+            course_list.append(data)
+        #list({{'course_code':c.course_code}: c for c in Course.objects.all()})
+        #return HttpResponse(json.dumps(course_list), content_type='application/json')
+        return HttpResponse(json.dumps(course_list), content_type='application/json')
+
+    # This only returns the length of Course.objects.all()
+    def head(self, request, *args, **kwargs):
+        response = HttpResponse(json.dumps({'satan':'satan'}), content_type='application/json')
+        response['Content-Length'] = len(Course.objects.all())
+        return response
 
     '''
     When POST here, only the specific course info will be sen
@@ -260,7 +290,6 @@ class CourseView(generic.View):
                         courses_list.append(course)
                         
                     try:
-                        print('\nhere2\n')
                         return HttpResponse(json.dumps(createJsonCourse([courses_list[0]])), content_type='application/json')
                     
                     except ValueError as e:
@@ -298,6 +327,7 @@ class EventView(generic.View):
 
         # Create new form and pass in post info.
         form = CourseForm(request.POST)
+        #print(request.POST)
         
         searchLogger = logging.getLogger('searchLogger')
         ip = get_ip(request)
