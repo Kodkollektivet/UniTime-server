@@ -128,8 +128,8 @@ def getCourseId(course_code):
         try:
             data = data['records']
 
-            # pp = pprint.PrettyPrinter(indent=4)
-            # pp.pprint(data)
+            #pp = pprint.PrettyPrinter(indent=4)
+            #pp.pprint(data)
 
             course_code_list = []
             
@@ -169,26 +169,34 @@ def getCourseInfo(course_id):
         defaultLogger.info('REQUEST: %s' % req)
         
         pp = pprint.PrettyPrinter(indent=4)
-        pp.pprint(req.text)
+        #pp.pprint(req.text)
 
         data = json.loads(req.text)
 
         data = json.dumps(data['records'])
+
         data = json.loads(data)
+        pp.pprint(data)
         data = data[0]['fields']
         data = data
         #pp.pprint(data)
         defaultLogger.info('Success!')
         defaultLogger.info(' ')
-        
+
         return {
-            'name':data[1]['values'][0],           
+            'name_sv':data[1]['values'][0],
+            'name_en':data[2]['values'][0],
             'course_code':data[0]['values'][0],
             'course_id':course_id,
-            #'vecka' (data[5]['values'][0])
+            'syllabus_sv': 'http://api.kursinfo.lnu.se/GenerateDocument.ashx?templatetype=coursesyllabus&code='+data[0]['values'][0]+'&documenttype=pdf&lang=sv',
+            'syllabus_en': 'http://api.kursinfo.lnu.se/GenerateDocument.ashx?templatetype=coursesyllabus&code='+data[0]['values'][0]+'&documenttype=pdf&lang=en',
+            'course_points': data[3]['values'][0],
+            'course_location': data[18]['values'][0],
+            'course_language': data[13]['values'][0],
             'course_reg':data[6]['values'][0][5:],
+            'course_speed': data[4]['values'][0],
             'semester': __THIS_SEMESTER,
-            'url': '',
+            'url': data[8]['values'][0],
             'year':__THIS_YEAR
         }
             
@@ -200,9 +208,3 @@ def getCourseInfo(course_id):
         errorLogger.info('ConnectionError in timeedit_handler.getCourseInfo:')
         errorLogger.info(e)
         errorLogger.info(' ')
-
-
-
-
-
-    
