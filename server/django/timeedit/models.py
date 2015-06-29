@@ -17,8 +17,14 @@ class Course(models.Model):
     url = models.CharField(max_length = 254, blank=True)   # html url
     year = models.CharField(max_length = 3) 
 
+    def __eq__(self, other):
+        if self.course_code == other.course_code:
+            return True
+        else:
+            return False
+
     def __unicode__(self):
-        return self.name
+        return self.course_code
 
 class Event(models.Model):
     
