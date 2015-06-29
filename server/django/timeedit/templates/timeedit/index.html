@@ -59,18 +59,18 @@
         $(function() {
             var availableTags = [];
             $.ajax({
-                url: "{% url 'only-course-codes' %}",
+                url: "{% url 'course' %}",
                 type: "GET",
                 dataType: "json",
                 success: function (json) {
                     for (i = 0 ; i < json.length ; i++) {
-                        availableTags.push(json[i]);
+                        availableTags.push(json[i]['course_code']);
                     };
                 }
             }),
             $( "#id_course" ).autocomplete({
                 source: availableTags,
-                minLength: 3
+                minLength: 2
             });
             return false;
         });
@@ -110,9 +110,6 @@
 </div>
 
 
-
-
-
 <!-- Events -->
 
 <div class="events">
@@ -121,9 +118,13 @@
         <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
         <div class="col-xs-10 col-sm-10 col-md-4 col-lg-4" align="center">
             <div class="well">
-              <div id="modalheader">{{ course.name }}</div><br>
+              <div id="modalheader">{{ course.name_en }}</div><br>
 	      <div id="modalheader">{{ course.course_code }}</div><br>
-              <a href="http://lnu.se/utbildning/kurser/{{ course.course_code }}">Link to course page</a>
+                <a href="{{ course.url }}">Link to course page</a><br>
+                <a href="{{ course.syllabus_en }}">Link to syllabus</a>
+
+                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true" type="button" data-toggle="modal" data-target="#syllabusModal" style="color: rgb(178, 34, 34);"></span>
+
             </div>
         </div>
         <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
@@ -193,5 +194,31 @@
     </div>
   </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="syllabusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" align="center">
+            <div id="modalheader">
+                UniTime
+                <div>
+        </h4>
+      </div>
+      <div class="modal-body" align="center">
+        <div>
+            Why is this important?<br>
+            The syllabus is the legal planning of a course.<br>
+            It is important the you know what you are expected to learn in a course.<br>
+            If you do not feel that a course is following the syllabus, take contact with a person responsible for the course.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
