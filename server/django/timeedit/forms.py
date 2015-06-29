@@ -18,7 +18,7 @@ class CourseForm(forms.Form):
         max_length=6,
            validators=[
             RegexValidator(
-                regex=re.compile(r'(^\d\w{2}\d{3}$)', flags=re.U),
+                regex=re.compile(r'(^\d\w{2}\d{2}.$)', flags=re.U),
                 message='Search term must be a course code!',
                 code='invalid_search'
             ),
