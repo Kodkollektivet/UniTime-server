@@ -246,7 +246,7 @@ class CourseView(generic.View):
 
         # Create new form and pass in post info.
         form = CourseForm(request.POST)
-        print(request.POST)
+
         searchLogger = logging.getLogger('searchLogger')
         ip = get_ip(request)
 
@@ -350,7 +350,12 @@ class EventView(generic.View):
                 defaultLogger.info('Course: %s' % course_post)
                 defaultLogger.info('-----------------END OF FETCH-----------------')
                 defaultLogger.info(' ')
-                return HttpResponse(json.dumps(getCourseEvents(course.semester, course.year, course.course_reg, course_post)), content_type='application/json')
+                return HttpResponse(json.dumps(getCourseEvents(course.semester,
+                                                               course.year,
+                                                               course.course_reg,
+                                                               course_post,
+                                                               course.name_en,
+                                                               course.name_sv)), content_type='application/json')
 
             # If there is mulit course objects in the database
             except MultipleObjectsReturned as e:
@@ -358,7 +363,12 @@ class EventView(generic.View):
                 course_events_list = []
                 
                 for i in courses:
-                    course_events_list.append(getCourseEvents(i.semester, i.year, i.course_reg, course_post))
+                    course_events_list.append(getCourseEvents(i.semester,
+                                                              i.year,
+                                                              i.course_reg,
+                                                              course_post,
+                                                              i.name_en,
+                                                              i.name_sv))
 
                 return HttpResponse(json.dumps(max(course_events_list)), content_type='application/json')
 
@@ -376,7 +386,12 @@ class EventView(generic.View):
                         courses_list.append(course)
 
                     for i in courses_list:
-                        events_list.append(getCourseEvents(i.semester, i.year, i.course_reg, course_post))
+                        events_list.append(getCourseEvents(i.semester,
+                                                           i.year,
+                                                           i.course_reg,
+                                                           course_post,
+                                                           i.name_en,
+                                                           i.name_sv))
                     
                     try:
                         return HttpResponse(json.dumps(max(events_list)), content_type='application/json')
