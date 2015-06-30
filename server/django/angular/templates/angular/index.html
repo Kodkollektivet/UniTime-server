@@ -28,7 +28,6 @@
     <script src="{% static 'angular/js/services.js' %}"></script>
     <script src="{% static 'angular/js/controllers.js' %}"></script>
 
-
     <!-- Scripts End -->
 
     <!-- CSS Start -->
@@ -36,77 +35,47 @@
     <!-- CSS End -->
 
 </head>
-<body ng-app="unitime" style="height: 100%; margin: 0; padding: 0;">
+
+<body ng-app="unitime" style="height: 100%; margin: 0; padding: 0;" ng-controller="unicontrol">
 
 
-
-    <!-- Coockies warning -->
-    <div class="alert alert-warning">
-        <a href="#" class="close" data-dismiss="alert">
-            <!--This service is based on coockies, by using this service you agree that we store coockies in you browneye.-->
-        </a>
-    </div>
-
-
-
-
-
-        <div ng-controller="unicontrol">
-
-            <div class="container">
-            <div class="row">
-                <h3>Cookies</h3>
-                <pre>[[ list|json]]</pre>
-            </div>
-            </div>
-
-            <div class="col-lg-12 col-md-12">
                 <div ng-repeat="course in selected_courses">
-                    <a ng-click="removeCourse(course)">
-                        [[ course.name_sv ]]
-                    </a>
-                </div>
-            </div>
-
-            <!-- Courses -->
-            <div class="col-lg-6 col-md-6">
-
-                <!-- Filter Courses Input -->
-                <form class="form-inline">
-                    <input type="text" class="form-control" ng-model="filterCourses" placeholder="Filter course" autofocus style="width: 100%">
-                </form><!-- Filter Courses Input End -->
-                <div class="list-group" style="height: 200pt; overflow: scroll; overflow-x: hidden;">
-                    <div ng-repeat="course in courses | filter : filterCourses">
-                        <div ng-if="$index % 2 == 0">
-                            <a href="" class="list-group-item list-group-item-success" ng-click="getCourse(course.course_code)" style="color: black;">
-                                ([[course.course_code]]) [[ course.name_en ]]
-                            </a>
-
-                        </div>
-                        <div ng-if="$index % 2 != 0">
-                            <a href="" class="list-group-item list-group-item-danger" ng-click="getCourse(course.course_code)" style="color: black;">
-                                ([[course.course_code]]) [[ course.name_en ]]
-                            </a>
-                        </div>
+                    <div class="col-lg-3 col-md-3">
+                        <!--<a ng-click="removeCourse(course)">-->
+                            <button type="button" class="btn btn-xs btn-warning" data-toggle="modal" data-target="#viewCourse" style="width: 100%;">
+                                <p>[[ course.course_code ]]</p>
+                                <p>[[ course.name_en ]]</p>
+                            </button>
+                        <!--</a>-->
                     </div>
                 </div>
-            </div><!-- Courses Ends -->
+
+
+            <!-- Button trigger modal -->
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCourseModal" style="width: 100%">
+              Add course
+            </button>
+
+
+
+
+
 
             <!-- Events -->
-            <div class="col-lg-6 col-md-6">
-                <ul class="list-group" style="height: 300pt; overflow: scroll; overflow-x: hidden;">
+            <div class="col-lg-12 col-md-12">
+                <ul class="list-group" style="height: 300pt; overflow: scroll; overflow-x: hidden; ">
                     <div ng-repeat="event in events | orderBy: 'startdate'">
 
                         <div ng-if="$index % 2 == 0">
                             <li class="list-group-item list-group-item-warning" style="color: black;">
-                                <div>[[ event.info ]]</div>
+                                <div>[[ event.name_en ]]</div>
                                 <div>[[ event.startdate ]]</div>
                                 <div>[[ event.room ]]</div>
                             </li>
                         </div>
                         <div ng-if="$index % 2 != 0">
                             <li class="list-group-item" style="color: black;">
-                                <div>[[ event.info ]]</div>
+                                <div>[[ event.name_en ]]</div>
                                 <div>[[ event.startdate ]]</div>
                                 <div>[[ event.room ]]</div>
                             </li>
@@ -116,14 +85,67 @@
                 </ul>
             </div>
 
-              <!--<h3>Cookies</h3>-->
-            <!--<pre>[[ list|json]]</pre>-->
+
+<!-- Add course Modal -->
+<div class="modal fade" id="viewCourse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add course</h4>
+      </div>
+      <div class="modal-body">
+          Hejsan
+      </div>
+    </div>
+  </div>
+</div> <!-- Add course modal end -->
 
 
 
-        </div>
+<!-- Add course Modal -->
+<div class="modal fade" id="addCourseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel">Add course</h4>
+      </div>
+      <div class="modal-body">
 
+                <!-- Filter Courses Input -->
+                <form class="form-inline">
+                    <input type="text" class="form-control" ng-model="filterCourses" placeholder="Filter course" autofocus style="width: 100%">
+                </form><!-- Filter Courses Input End -->
+                <div style="height: 300pt; overflow: scroll; overflow-x: hidden;">
+                    <div class="list-group">
+                        <div ng-repeat="course in courses | filter : filterCourses">
+                            <button type="button" class="list-group-item" ng-if="$index % 2 == 0" ng-click="getCourse(course.course_code)" style="color: black;">
+                                <h4 class="list-group-item-heading">
+                                [[course.course_code]]
+                                </h4>
+                                <p style="margin-bottom: -0.0vh">[[course.name_en]]</p>
+                                <p>[[course.name_sv]]</p>
+                            </button>
 
+                            <button type="button" class="list-group-item" ng-if="$index % 2 != 0" ng-click="getCourse(course.course_code)" style="color: black;">
+                           <h4 class="list-group-item-heading">
+                               [[course.course_code]]
+                           </h4>
+                                <p style="margin-bottom: -0.0vh">[[course.name_en]]</p>
+                                <p>[[course.name_sv]]</p>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+          <div align="center">
+              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+      </div>
+
+    </div>
+  </div>
+</div> <!-- Add course modal end -->
 
 </body>
 </html>

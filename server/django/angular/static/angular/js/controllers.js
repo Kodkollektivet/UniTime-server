@@ -5,6 +5,19 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
     $scope.events = [];
     $scope.selected_courses = [];
 
+    // Init method
+    $scope.init = function(){
+        $scope.selected_courses = $cookies.getObject("courses");
+         if(typeof $scope.selected_courses === 'undefined'){
+             $scope.selected_courses = [];
+         }
+         else{
+             angular.forEach($scope.selected_courses, function(course){
+                 $scope.getEvents(course['course_code']);
+             });
+         }
+    };
+
     Course.query(function(response){
         for (var i = 0 ; i < response.length ; i++){
             $scope.courses.push(response[i]);
@@ -12,17 +25,6 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         //$scope.courses = response.data;
     });
 
-    $scope.saveToCoockie = function(course){
-
-        var courseObject = { 'course' : course};
-        $cookies.put('courses',[]);
-        var array = $cookies.get('courses');
-        array.push(courseObject);
-        $cookies.put('courses', array);
-
-    };
-
-    $scope.list = $cookies.getObject('courses');
 
     $scope.getCourse = function (course_code) {
         $http({
@@ -41,42 +43,26 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         })
             .then(function(response) {
                 for ( var i = 0 ; i < response.data.length ; i++){
-                    $scope.selected_courses.push(response.data[i]);
-                    $scope.getEvents(response.data[i]['course_code']);
-                    $cookies.putObject('courses', response.data[i]['course_code']);
+                    $scope.selected_courses.push(response.data[i]); // Push course obj to selected list
+                    $scope.getEvents(response.data[i]['course_code']); // Get events
+                    $cookies.putObject('courses', $scope.selected_courses); // Store in cookie
                 }
             },
             function(response) { // optional
-                alert(response);
+                //alert(response); // ERROR
             });
     };
 
     $scope.removeCourse = function(course_in){
         $scope.selected_courses.splice($scope.selected_courses.indexOf(course_in), 1);
 
+        // Remove events connected to removed course
         angular.forEach($scope.events, function(course){
-            //console.log(course_in['course_code']);
-            //console.log(course['course_code']);
             if (course_in['course_code'] == course['course_code']){
-                //console.log("LIKA");
                 $scope.events = _.without($scope.events, course);
             }
         });
-        /*
-        for (var i = 0; i < $scope.events.length ; i++){
-
-            if ($scope.events[i]['course_code'].localeCompare(course['course_code']) == 0){
-
-                console.log($scope.events[i]['course_code']);
-                console.log(course['course_code']);
-                console.log("");
-                var index = $scope.events[i];
-                console.log(index);
-                $scope.events.splice($scope.events.indexOf($scope.events[i],1));
-
-            }
-        }
-        */
+        $cookies.putObject('courses', $scope.selected_courses); // Store in cookie
     };
 
     $scope.getEvents = function (course_code) {
@@ -100,8 +86,11 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
                 }
             },
             function(response) { // optional
-                // failed
+                // ERROR
             });
     }
+
+    // Calling init method
+    $scope.init();
 
 });
