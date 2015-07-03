@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html style="height: 100%; margin: 0; padding: 0;">
 <head lang="en">
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>UniTime</title>
@@ -14,13 +14,9 @@
     <script src="{% static 'angular/js/lib/angular-route.js' %}"></script>
     <script src="{% static 'angular/js/lib/angular-resource.js' %}"></script>
     <script src="{% static 'angular/js/lib/angular-sanitize.min.js' %}"></script>
-    <script src="{% static 'angular/js/lib/angular-ui-router.min.js' %}"></script>
     <script src="{% static 'angular/js/lib/angular-cookies.js' %}"></script>
-    <script src="{% static 'angular/js/lib/angular-ui-tinymce.js' %}"></script>
 
     <script src="{% static 'angular/js/lib/bootstrap.min.js' %}"></script>
-
-    <script src="{% static 'angular/js/lib/tinymce.min.js' %}"></script>
 
     <script src="{% static 'angular/js/lib/underscore-min.js' %}"></script>
 
@@ -36,48 +32,87 @@
 
 </head>
 
-<body ng-app="unitime" style="height: 100%; margin: 0; padding: 0;" ng-controller="unicontrol">
-
-
-                <div ng-repeat="course in selected_courses">
-                    <div class="col-lg-3 col-md-3">
-                        <!--<a ng-click="removeCourse(course)">-->
-                            <button type="button" class="btn btn-xs btn-warning" data-toggle="modal" data-target="#viewCourse" style="width: 100%;">
-                                <p>[[ course.course_code ]]</p>
-                                <p>[[ course.name_en ]]</p>
-                            </button>
-                        <!--</a>-->
-                    </div>
-                </div>
-
-
-            <!-- Button trigger modal -->
-            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#addCourseModal" style="width: 100%">
-              Add course
-            </button>
+<body ng-app="unitime" style="padding-top: 70px;" ng-controller="unicontrol">
 
 
 
+<nav class="navbar navbar-default navbar-fixed-top">
+  <div class="container-fluid">
+    <!-- Brand and toggle get grouped for better mobile display -->
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="#">UniTime</a>
+    </div>
+
+    <!-- Collect the nav links, forms, and other content for toggling -->
+    <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
+        <ul class="nav navbar-nav navbar-right">
+            <li><a type="button" class="btn btn-warning" data-toggle="modal" data-target="#addCourseModal">Add course</a></li>
+            <ul class="list-inline nav navbar-nav" ng-repeat="course in selected_courses">
+                <li><a type="button" class="btn btn-primary" ng-click="courseDetail(course)" data-toggle="modal" data-target="#courseModal">[[course.course_code]]</a></li>
+            </ul>
+        </ul>
+
+    </div><!-- /.navbar-collapse -->
+  </div><!-- /.container-fluid -->
+</nav>
 
 
+
+<!-- Ajax loader -->
+<div id="ajaxloader" align="center" style="margin-top: 60pt" hidden>
+    <img  src="{% static 'angular/gif/ajax-loader.gif' %}">
+</div>
 
             <!-- Events -->
             <div class="col-lg-12 col-md-12">
-                <ul class="list-group" style="height: 300pt; overflow: scroll; overflow-x: hidden; ">
+                <ul class="list-group">
                     <div ng-repeat="event in events | orderBy: 'startdate'">
 
                         <div ng-if="$index % 2 == 0">
                             <li class="list-group-item list-group-item-warning" style="color: black;">
-                                <div>[[ event.name_en ]]</div>
-                                <div>[[ event.startdate ]]</div>
-                                <div>[[ event.room ]]</div>
+                                <div align="center"><h3>[[ event.name_en ]]</h3></div>
+                                <div align="center"><h3>[[ event.startdate ]] / [[event.starttime]]-[[event.endtime]]</h3></div>
+                                <div ng-if="event.room.length < 2">Room: Not available</div>
+                                <div ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
+
+                                <div ng-if="event.teacher.length < 2">Teacher: Not available</div>
+                                <div ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
+
+
+                                <div ng-if="event.info.length < 2">Info: Not available</div>
+                                <div ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
+
+                                <div ng-if="event.desc.length < 2">Description: Not available</div>
+                                <div ng-if="event.desc.length >= 2">Description: [[ event.desc ]]</div>
+
+
+                                <!--[[event]]-->
                             </li>
                         </div>
                         <div ng-if="$index % 2 != 0">
                             <li class="list-group-item" style="color: black;">
-                                <div>[[ event.name_en ]]</div>
-                                <div>[[ event.startdate ]]</div>
-                                <div>[[ event.room ]]</div>
+                                <div align="center"><h3>[[ event.name_en ]]</h3></div>
+                                <div align="center"><h3>[[ event.startdate ]] / [[event.starttime]]-[[event.endtime]]</h3></div>
+                                <div ng-if="event.room.length < 2">Room: Not available</div>
+                                <div ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
+
+                                <div ng-if="event.teacher.length < 2">Teacher: Not available</div>
+                                <div ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
+
+
+                                <div ng-if="event.info.length < 2">Info: Not available</div>
+                                <div ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
+
+                                <div ng-if="event.desc.length < 2">Description: Not available</div>
+                                <div ng-if="event.desc.length >= 2">Description: [[ event.desc ]]</div>
+
                             </li>
                         </div>
 
@@ -86,66 +121,105 @@
             </div>
 
 
-<!-- Add course Modal -->
-<div class="modal fade" id="viewCourse" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Add course</h4>
-      </div>
-      <div class="modal-body">
-          Hejsan
-      </div>
-    </div>
-  </div>
-</div> <!-- Add course modal end -->
 
 
+        <!-- Add course Modal -->
+        <div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Course info</h4>
+              </div>
+              <div class="modal-body" align="center">
+                  <h2>[[ course_info.course_code ]]</h2>
+                  <h3>[[ course_info.name_en ]]</h3>
+                  <h3>[[ course_info.name_sv ]]</h3>
+                  <h3>[[ course_info.course_points ]]</h3>
+                  <h3>[[ course_info.course_speed ]]</h3>
+                  <h4><a href="[[ course_info.syllabus_en ]]">Syllabus SV</a></h4>
+                  <h4><a href="[[ course_info.syllabus_sv ]]">Syllabus EN</a></h4>
+                  <h4><a href="[[ course_info.url ]]">URL</a></h4>
 
-<!-- Add course Modal -->
-<div class="modal fade" id="addCourseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title" id="myModalLabel">Add course</h4>
-      </div>
-      <div class="modal-body">
+              </div>
 
-                <!-- Filter Courses Input -->
-                <form class="form-inline">
-                    <input type="text" class="form-control" ng-model="filterCourses" placeholder="Filter course" autofocus style="width: 100%">
-                </form><!-- Filter Courses Input End -->
-                <div style="height: 300pt; overflow: scroll; overflow-x: hidden;">
-                    <div class="list-group">
-                        <div ng-repeat="course in courses | filter : filterCourses">
-                            <button type="button" class="list-group-item" ng-if="$index % 2 == 0" ng-click="getCourse(course.course_code)" style="color: black;">
-                                <h4 class="list-group-item-heading">
-                                [[course.course_code]]
-                                </h4>
-                                <p style="margin-bottom: -0.0vh">[[course.name_en]]</p>
-                                <p>[[course.name_sv]]</p>
-                            </button>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                          <button ng-click="removeCourse(course_info)" type="button" class="btn btn-danger">Delete</button>
+                      </div>
 
-                            <button type="button" class="list-group-item" ng-if="$index % 2 != 0" ng-click="getCourse(course.course_code)" style="color: black;">
-                           <h4 class="list-group-item-heading">
-                               [[course.course_code]]
-                           </h4>
-                                <p style="margin-bottom: -0.0vh">[[course.name_en]]</p>
-                                <p>[[course.name_sv]]</p>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-          <div align="center">
-              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
           </div>
-      </div>
+        </div> <!-- Add course modal end -->
 
-    </div>
-  </div>
-</div> <!-- Add course modal end -->
+
+
+        <!-- Add course Modal -->
+        <div class="modal fade" id="addCourseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">Add course</h4>
+              </div>
+              <div class="modal-body">
+
+                  <!-- Message -->
+                    <div id="alert_message" class="alert alert-success alert-dismissible" role="alert" align="center">
+                      <button type="button" class="close" aria-label="Close" onclick="closeAlertMessage()"><span aria-hidden="true">&times;</span></button>
+                      <strong>[[message]]</strong>
+                    </div>
+
+                        <!-- Filter Courses Input -->
+                        <form class="form-inline">
+                            <input type="text" class="form-control" ng-model="filterCourses" placeholder="Filter course" autofocus style="width: 100%">
+                        </form><!-- Filter Courses Input End -->
+                        <div style="height: 200pt; overflow: scroll; overflow-x: hidden;">
+                            <div class="list-group">
+                                <div ng-repeat="course in courses | filter : filterCourses">
+                                    <button type="button" class="list-group-item" ng-if="$index % 2 == 0" ng-click="getCourse(course.course_code)" style="color: black;">
+                                        <h4 class="list-group-item-heading">
+                                        [[course.course_code]]
+                                        </h4>
+                                        <p style="margin-bottom: -0.0vh">[[course.name_en]]</p>
+                                        <p>[[course.name_sv]]</p>
+                                    </button>
+
+                                    <button type="button" class="list-group-item" ng-if="$index % 2 != 0" ng-click="getCourse(course.course_code)" style="color: black;">
+                                   <h4 class="list-group-item-heading">
+                                       [[course.course_code]]
+                                   </h4>
+                                        <p style="margin-bottom: -0.0vh">[[course.name_en]]</p>
+                                        <p>[[course.name_sv]]</p>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+              </div>
+
+            </div>
+          </div>
+        </div> <!-- Add course modal end -->
+
+<script>
+    $('#alert_message').hide();
+
+    var openAlertMessage = function() {
+        $('#alert_message').show();
+    };
+
+    var closeAlertMessage = function() {
+        //$('#alert_message').hide().delay(2000).fadeOut('slow');
+        window.setTimeout(function() {
+            $("#alert_message").fadeTo(500, 0).slideUp(500, function(){
+                $(this).fadeTo(0,500);
+                $(this).hide();
+            });
+        }, 2000);
+    };
+
+</script>
 
 </body>
 </html>
