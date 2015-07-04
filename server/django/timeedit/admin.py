@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Course, Event
+from .models import Course, Event, CourseCodes
 
 class CourseAdmin(admin.ModelAdmin):
     model = Course
@@ -10,5 +10,6 @@ class CourseAdmin(admin.ModelAdmin):
 
 admin.site.register(Course, CourseAdmin)
 admin.site.register(Event)
+admin.site.register(CourseCodes)
 
 

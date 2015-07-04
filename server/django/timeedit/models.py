@@ -38,4 +38,10 @@ class Event(models.Model):
 
     def __unicode__(self):
         return self.info
-    
+
+class CourseCodes(models.Model):
+
+    code = models.CharField(max_length=10, unique=True)
+
+    def __unicode__(self):
+        return self.code
