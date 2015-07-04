@@ -28,12 +28,8 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         if ($cookies.get('accept_cookies') === 't'){
             console.log($cookies.get('accept_cookies'));
             $scope.cookie_accepted = 't';
-            console.log('Accept is true');
         }
         else {
-            console.log('Cookies not accepted');
-            console.log($scope.accept_cookie);
-            console.log($cookies.get('accept_cookies'));
             $scope.cookie_accepted = 'f';
         }
     };
@@ -78,7 +74,6 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
                     if(_.contains(_.map($scope.selected_courses, function(course){
                             return course.course_code;
                         }), response.data[i]['course_code'])){
-                        console.log('True satan');
                     }
                     else{
                         $scope.selected_courses.push(response.data[i]); // Push course obj to selected list
