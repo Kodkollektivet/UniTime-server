@@ -32,11 +32,11 @@
 
 </head>
 
-<body ng-app="unitime" style="padding-top: 70px;" ng-controller="unicontrol">
+<body ng-app="unitime" style="" ng-controller="unicontrol">
 
 
 
-<nav class="navbar navbar-default navbar-fixed-top">
+<nav class="navbar navbar-default">
   <div class="container-fluid">
     <!-- Brand and toggle get grouped for better mobile display -->
     <div class="navbar-header">
@@ -46,7 +46,7 @@
         <span class="icon-bar"></span>
         <span class="icon-bar"></span>
       </button>
-      <a class="navbar-brand" href="#">UniTime</a>
+      <a class="navbar-brand" data-toggle="modal" data-target="#unitimeInfoModal">UniTime</a>
     </div>
 
     <!-- Collect the nav links, forms, and other content for toggling -->
@@ -63,7 +63,14 @@
   </div><!-- /.container-fluid -->
 </nav>
 
-
+  <!-- Cookie Message -->
+<div ng-if="cookie_accepted === undefined || cookie_accepted === 'f'">
+    <div id="cookie_message" class="alert alert-danger alert-dismissible" role="alert" align="center">
+      <button type="button" class="close" data-dismiss="alert" aria-label="Close" ng-click="acceptCookieFunction()"><span aria-hidden="true">&times;</span></button>
+      <strong>This service is based on cookies, by using it you accept that we store cookies!</strong>
+        <a href="https://www.pts.se/sv/Bransch/Regler/Lagar/Lag-om-elektronisk-kommunikation/Cookies-kakor/Fragor-och-svar-om-kakor-for-webbplatsinnehavare/">More info!</a>
+    </div>
+</div>
 
 <!-- Ajax loader -->
 <div id="ajaxloader" align="center" style="margin-top: 60pt" hidden>
@@ -71,47 +78,52 @@
 </div>
 
             <!-- Events -->
-            <div class="col-lg-12 col-md-12">
+            <div class="col-xs-12 col-sm-12 col-lg-12 col-md-12">
                 <ul class="list-group">
                     <div ng-repeat="event in events | orderBy: 'startdate'">
 
                         <div ng-if="$index % 2 == 0">
                             <li class="list-group-item list-group-item-warning" style="color: black;">
+                                <div ng-if="event.teacher == 'Tobias Andersson-Gidlund'" align="center">
+                                    <img style="width: 25pt; height: 25pt;" src="http://orig07.deviantart.net/49e8/f/2010/331/1/2/darth_vader_icon_256x256_by_geo_almighty-d33pmyi.png">
+                                </div>
                                 <div align="center"><h3>[[ event.name_en ]]</h3></div>
+
                                 <div align="center"><h3>[[ event.startdate ]] / [[event.starttime]]-[[event.endtime]]</h3></div>
-                                <div ng-if="event.room.length < 2">Room: Not available</div>
-                                <div ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
+                                <div style="width: 100%;" ng-if="event.room.length < 2">Room: Not available</div>
+                                <div style="width: 100%;" ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
 
-                                <div ng-if="event.teacher.length < 2">Teacher: Not available</div>
-                                <div ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
-
-
-                                <div ng-if="event.info.length < 2">Info: Not available</div>
-                                <div ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
-
-                                <div ng-if="event.desc.length < 2">Description: Not available</div>
-                                <div ng-if="event.desc.length >= 2">Description: [[ event.desc ]]</div>
+                                <div style="width: 100%;" ng-if="event.teacher.length < 2">Teacher: Not available</div>
+                                <div style="width: 100%;" ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
 
 
-                                <!--[[event]]-->
+                                <div style="width: 100%;" ng-if="event.info.length < 2">Info: Not available</div>
+                                <div style="width: 100%;" ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
+
+                                <div style="width: 100%;" ng-if="event.desc.length < 2">Description: Not available</div>
+                                <div style="width: 100%;" ng-if="event.desc.length >= 2">Description: [[ event.desc ]]</div>
                             </li>
                         </div>
                         <div ng-if="$index % 2 != 0">
-                            <li class="list-group-item" style="color: black;">
+                            <li class="list-group-item" style="max-width: 100%; color: black;">
+                                <div ng-if="event.teacher == 'Tobias Andersson-Gidlund'" align="center">
+                                    <img style="width: 25pt; height: 25pt;" src="http://orig07.deviantart.net/49e8/f/2010/331/1/2/darth_vader_icon_256x256_by_geo_almighty-d33pmyi.png">
+                                </div>
                                 <div align="center"><h3>[[ event.name_en ]]</h3></div>
+
                                 <div align="center"><h3>[[ event.startdate ]] / [[event.starttime]]-[[event.endtime]]</h3></div>
-                                <div ng-if="event.room.length < 2">Room: Not available</div>
-                                <div ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
+                                <div style="width: 100%;" ng-if="event.room.length < 2">Room: Not available</div>
+                                <div style="width: 100%;" ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
 
-                                <div ng-if="event.teacher.length < 2">Teacher: Not available</div>
-                                <div ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
+                                <div style="width: 100%;" ng-if="event.teacher.length < 2">Teacher: Not available</div>
+                                <div style="width: 100%;" ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
 
 
-                                <div ng-if="event.info.length < 2">Info: Not available</div>
-                                <div ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
+                                <div style="width: 100%;" ng-if="event.info.length < 2">Info: Not available</div>
+                                <div style="width: 100%;" ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
 
-                                <div ng-if="event.desc.length < 2">Description: Not available</div>
-                                <div ng-if="event.desc.length >= 2">Description: [[ event.desc ]]</div>
+                                <div style="width: 100%;" ng-if="event.desc.length < 2">Description: Not available</div>
+                                <div style="width: 100%;" ng-if="event.desc.length >= 2">Description: [[ event.desc ]]</div>
 
                             </li>
                         </div>
@@ -123,7 +135,7 @@
 
 
 
-        <!-- Add course Modal -->
+        <!-- Course info modal -->
         <div class="modal fade" id="courseModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -197,6 +209,32 @@
                         </div>
 
               </div>
+
+            </div>
+          </div>
+        </div> <!-- Add course modal end -->
+
+
+        <!-- UniTime info modal -->
+        <div class="modal fade" id="unitimeInfoModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="myModalLabel">About UniTime</h4>
+              </div>
+              <div class="modal-body">
+
+                  UniTime is a service made by Kodkollektivet!
+                  Kodkollektivet is a group of students from LNU.
+                  If you wanna join us or have interest in our projects.
+                  Please visit us at: <a href="http://www.kodkollektivet.se">Kodkollektivet</a>
+
+              </div>
+
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                      </div>
 
             </div>
           </div>

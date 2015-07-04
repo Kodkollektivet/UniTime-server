@@ -6,6 +6,12 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
     $scope.selected_courses = [];
     $scope.message = "";
     $scope.course_info = "satan";
+    $scope.cookie_accepted;
+
+    $scope.acceptCookieFunction = function(){
+        $scope.cookie_accepted = 't';
+        $cookies.put('accept_cookies', $scope.cookie_accepted);
+    }
 
     // Init method
     $scope.init = function(){
@@ -18,6 +24,18 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
                  $scope.getEvents(course['course_code']);
              });
          }
+        // Get accept cookies
+        if ($cookies.get('accept_cookies') === 't'){
+            console.log($cookies.get('accept_cookies'));
+            $scope.cookie_accepted = 't';
+            console.log('Accept is true');
+        }
+        else {
+            console.log('Cookies not accepted');
+            console.log($scope.accept_cookie);
+            console.log($cookies.get('accept_cookies'));
+            $scope.cookie_accepted = 'f';
+        }
     };
 
     Course.query(function(response){
@@ -38,7 +56,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
     };
 
     $scope.getCourse = function (course_code) {
-
+        $cookies.put('accept_cookies', 't');
         $http({
             url: '/api/course/',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
