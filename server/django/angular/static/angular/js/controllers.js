@@ -26,7 +26,6 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
          }
         // Get accept cookies
         if ($cookies.get('accept_cookies') === 't'){
-            console.log($cookies.get('accept_cookies'));
             $scope.cookie_accepted = 't';
         }
         else {
