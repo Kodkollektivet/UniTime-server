@@ -6,9 +6,9 @@ from timeedit.views import IndexView, CourseView, EventView
 from angular.views import IndexTemplateView
 
 urlpatterns = [
-    url(r'^$', IndexView.as_view(), name='index'),
+    url(r'^old/$', IndexView.as_view(), name='index'),
 
-    url(r'^a/$', IndexTemplateView.as_view(), name='a'),
+    url(r'^$', IndexTemplateView.as_view(), name='angular'),
 
     #url(r'^api/only-course-codes/$', allCouseCodesInJSON, name='only-course-codes'),
     url(r'^api/course/$', CourseView.as_view(), name='course'),
