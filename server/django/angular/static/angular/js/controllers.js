@@ -98,9 +98,10 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         angular.forEach($scope.events, function(course){
             if (course_in['course_code'] == course['course_code']){
                 $scope.events = _.without($scope.events, course);
-                $('#courseModal').modal('hide');
+
             }
         });
+        $('#courseModal').modal('hide'); // close modal when course is deleted
         $cookies.putObject('courses', $scope.selected_courses); // Store in cookie
     };
 
