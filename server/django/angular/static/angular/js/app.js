@@ -2,6 +2,7 @@ angular.module('unitime', [
     'ngResource',
     'ngRoute',
     'ngCookies',
+    'ui.bootstrap',
     'unitime.services',
     'unitime.controllers',
 ])
