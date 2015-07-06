@@ -52,6 +52,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
 
     $scope.getCourse = function (course_code) {
         $cookies.put('accept_cookies', 't');
+        $scope.cookie_accepted = 't';
         $http({
             url: '/api/course/',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
