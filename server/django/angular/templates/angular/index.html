@@ -1,4 +1,6 @@
 {% load staticfiles %}
+{% load compress %}
+
 <!DOCTYPE html>
 <html style="height: 100%; margin: 0; padding: 0;">
 <head lang="en">
@@ -8,6 +10,7 @@
     <title>UniTime</title>
 
     <!-- Scripts Start -->
+    {% compress js %}
     <script src="{% static 'angular/js/lib/jquery-2.1.4.min.js' %}"></script>
 
     <script src="{% static 'angular/js/lib/angular.js' %}"></script>
@@ -23,12 +26,14 @@
     <script src="{% static 'angular/js/app.js' %}"></script>
     <script src="{% static 'angular/js/services.js' %}"></script>
     <script src="{% static 'angular/js/controllers.js' %}"></script>
-
+    {% endcompress %}
     <!-- Scripts End -->
 
     <!-- CSS Start -->
+    {% compress css %}
     <link rel="stylesheet" type="text/css" href="{% static 'angular/css/bootstrap.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'angular/css/app.css' %}">
+    {% endcompress %}
     <!-- CSS End -->
 
 </head>
