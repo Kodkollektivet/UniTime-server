@@ -78,7 +78,9 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
                     else{
                         $scope.selected_courses.push(response.data[i]); // Push course obj to selected list
                         $scope.getEvents(response.data[i]['course_code']); // Get events
-                        $cookies.putObject('courses', $scope.selected_courses); // Store in cookie
+                        var now = new Date(); // today date
+                        var exp = new Date(now.getFullYear()+1, now.getMonth(), now.getDate()); // cookie expire date, 1 year
+                        $cookies.putObject('courses', $scope.selected_courses, {expires: exp}); // Store in cookie
                         $scope.message = response.data[i]['name_en']+" added!";
                         openAlertMessage();
                         closeAlertMessage();
