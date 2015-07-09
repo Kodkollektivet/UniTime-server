@@ -113,6 +113,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         });
         $('#courseModal').modal('hide'); // close modal when course is deleted
         $cookies.putObject('courses', $scope.selected_courses); // Store in cookie
+        back_to_info();
     };
 
 

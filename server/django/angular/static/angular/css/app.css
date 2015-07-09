@@ -1,3 +1,44 @@
 [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
   display: none !important;
 }
+
+.well {
+  padding: 20px;
+  background-color: #FFF6E4;
+  border: 0px solid #E3E3E3;
+  border-radius: 10px;
+  box-shadow: 0px 1px 1px rgba(0, 0, 0, 0.05) inset;
+
+}
+
+body {
+    background-color: #405E78;
+}
+
+#filterCourse {
+  display: inline-block;
+  width: auto;
+  vertical-align: middle;
+  background-color: #405E78;
+  color: white;
+  border-radius: 10px;
+  width: 100%;
+  border: 0px solid #E3E3E3;
+  text-align: center;
+}
+
+#date_today {
+  font-weight: bold;
+  margin-top: -30pt;
+  max-height: 20pt;
+  max-width: 100%;
+}
+
+#bs-example-navbar-collapse-1{
+  overflow-x: hidden;
+}
+
+.eventWell{
+  max-height: 85pt;
+  overflow: hidden;
+}

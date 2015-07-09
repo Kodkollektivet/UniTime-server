@@ -39,7 +39,7 @@
 
 </head>
 
-<body ng-app="unitime" style="" ng-controller="unicontrol">
+<body ng-app="unitime" ng-controller="unicontrol">
 
 
 
@@ -99,14 +99,14 @@
             <!-- Events -->
             <div class="container">
 
-                <div id="date_today" class="well well-sm" align="center" style="margin-top: -17pt; font-weight: bold;">
+                <div class="well well-sm" align="center" id="date_today">
                     Date today: [[date | date:'yyyy-MM-dd']]
                 </div>
 
                 <div style="margin-top: -15pt;" id="filterCoursesForm">
                     <!-- Filter Courses Input -->
                     <form class="form-inline">
-                        <input type="text" class="form-control" ng-model="filterEvents" placeholder="Filter event" style="width: 100%">
+                        <input type="text" class="form-control" ng-model="filterEvents" placeholder="Filter event" id="filterCourse">
                     </form><!-- Filter Courses Input End -->
                 </div>
 
@@ -114,11 +114,11 @@
                     <div ng-repeat="event in events | orderBy: 'start_datetime' | filter: filterEvents">
 
 
-                            <div class="well">
+                            <div class="well eventWell"  id="eventWell[[$index]]" onclick="expandEventWell(this.id)">
                                 <div ng-if="event.teacher == 'Tobias Andersson-Gidlund'" align="center">
                                     <img style="width: 25pt; height: 25pt;" src="http://orig07.deviantart.net/49e8/f/2010/331/1/2/darth_vader_icon_256x256_by_geo_almighty-d33pmyi.png">
                                 </div>
-                                <div class="row" align="center" style="margin-top: -10pt;">
+                                <div class="row" align="center" style="margin-top: -20pt;">
                                     <h3>[[ event.name_en ]]</h3>
                                 </div>
 
@@ -142,7 +142,7 @@
 
                                         <div class="row">
                                             <div ng-if="event.desc.length < 2"><b>Desc:</b> Not available</div>
-                                            <div style="width:100px; word-wrap: break-word;" ng-if="event.desc.length >= 2"><b>Desc:</b> [[ event.desc ]]</div>
+                                            <div style="width: 100%; word-wrap: break-word;" ng-if="event.desc.length >= 2"><b>Desc:</b> [[ event.desc ]]</div>
                                         </div>
                                     </div>
 
@@ -202,7 +202,7 @@
                     <form id="ratingform" align="center">
                         <div align="center"><h3>Please rate the course:</h3></div>
                         <label for="sel1">Rating:</label>
-                        <select class="form-control" id="sel1" ng-model="rateIn" style="max-width: 100%">
+                        <select class="form-control" id="sel1" ng-model="rateIn" style="max-width: 100%" required>
 
                             <option value="10">10 - Good</option>
                             <option value="9">9</option>
@@ -217,7 +217,7 @@
 
                         </select>
                         <label for="sel2">Note:</label>
-                        <textarea class="form-control" id="sel2" rows="3" ng-model="textIn"></textarea>
+                        <textarea class="form-control" id="sel2" rows="3" ng-model="textIn" required></textarea>
                     </form>
                 </div>
 
@@ -239,7 +239,7 @@
             <div class="modal-content">
               <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="myModalLabel">Add course</h4>
+                <h4 class="modal-title" id="myModalLabel" align="center">Add course</h4>
               </div>
               <div class="modal-body">
 
@@ -335,6 +335,16 @@
         back_to_info();
 
     }
+
+    var expandEventWell = function(id){
+        var overflow = $('#'+id).css('overflow');
+        if (overflow == "hidden"){
+            $('#'+id).css({ 'max-height' : '100%', 'overflow' : 'visible' });
+        }
+        else{
+            $('#'+id).css({ 'max-height' : '85pt', 'overflow' : 'hidden' });
+        }
+    };
 
     var closeAlertMessage = function() {
 
