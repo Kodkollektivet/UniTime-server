@@ -7,11 +7,17 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
     $scope.message = "";
     $scope.course_info = "satan";
     $scope.cookie_accepted;
+    $scope.date = new Date();
 
     $scope.acceptCookieFunction = function(){
         $scope.cookie_accepted = 't';
         $cookies.put('accept_cookies', $scope.cookie_accepted);
-    }
+    };
+
+    $scope.timediff = function(start_datetime){
+        var now = new Date();
+        return moment.utc(moment(start_datetime).diff(moment(now))).format("mm")
+    };
 
     // Init method
     $scope.init = function(){
@@ -84,6 +90,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
                         $scope.message = response.data[i]['name_en']+" added!";
                         openAlertMessage();
                         closeAlertMessage();
+
                     }
                 }
 
@@ -108,6 +115,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         $cookies.putObject('courses', $scope.selected_courses); // Store in cookie
     };
 
+
     $scope.getEvents = function (course_code) {
         $('#ajaxloader').show();
         $http({
@@ -126,9 +134,20 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         })
             .then(function(response) {
                 for ( var i = 0 ; i < response.data.length ; i++){
+                    var d = response.data[i]['startdate'].split('-');
+                    var t = response.data[i]['starttime'].split(':');
+                    var date = new Date(d[0], d[1], d[2], t[0], t[1]);
+                    var date_now = new Date();
+                    console.log(date_now);
+                    response.data[i]['start_datetime'] = date;
+                    response.data[i]['day'] = moment(response.data[i]['startdate']).format('dddd');
+                    //response.data[i]['until'] = (date-date_now)/(24*3600*1000);
+                    //console.log(response.data[i]['start_datetime'].toLocaleString());
+                    //console.log(response.data[i]);
                     $scope.events.push(response.data[i]);
                 }
                 $('#ajaxloader').hide();
+                $('#date_today').show();
             },
             function(response) { // optional
                 // ERROR

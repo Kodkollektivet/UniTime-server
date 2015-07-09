@@ -11,21 +11,22 @@
 
     <!-- Scripts Start -->
     {% compress js %}
-    <script src="{% static 'angular/js/lib/jquery-2.1.4.min.js' %}"></script>
+        <script src="{% static 'angular/js/lib/jquery-2.1.4.min.js' %}"></script>
 
-    <script src="{% static 'angular/js/lib/angular.js' %}"></script>
-    <script src="{% static 'angular/js/lib/angular-route.js' %}"></script>
-    <script src="{% static 'angular/js/lib/angular-resource.js' %}"></script>
-    <script src="{% static 'angular/js/lib/angular-sanitize.min.js' %}"></script>
-    <script src="{% static 'angular/js/lib/angular-cookies.js' %}"></script>
+        <script src="{% static 'angular/js/lib/angular.js' %}"></script>
+        <script src="{% static 'angular/js/lib/angular-route.js' %}"></script>
+        <script src="{% static 'angular/js/lib/angular-resource.js' %}"></script>
+        <script src="{% static 'angular/js/lib/angular-sanitize.min.js' %}"></script>
+        <script src="{% static 'angular/js/lib/angular-cookies.js' %}"></script>
+        <script src="{% static 'angular/js/lib/moment.js' %}"></script>
 
-    <script src="{% static 'angular/js/lib/bootstrap.min.js' %}"></script>
+        <script src="{% static 'angular/js/lib/bootstrap.min.js' %}"></script>
 
-    <script src="{% static 'angular/js/lib/underscore-min.js' %}"></script>
+        <script src="{% static 'angular/js/lib/underscore-min.js' %}"></script>
 
-    <script src="{% static 'angular/js/app.js' %}"></script>
-    <script src="{% static 'angular/js/services.js' %}"></script>
-    <script src="{% static 'angular/js/controllers.js' %}"></script>
+        <script src="{% static 'angular/js/app.js' %}"></script>
+        <script src="{% static 'angular/js/services.js' %}"></script>
+        <script src="{% static 'angular/js/controllers.js' %}"></script>
     {% endcompress %}
     <!-- Scripts End -->
 
@@ -98,55 +99,71 @@
             <!-- Events -->
             <div class="container">
 
+                <div id="date_today" class="well well-sm" align="center" style="margin-top: -17pt; font-weight: bold;">
+                    Date today: [[date | date:'yyyy-MM-dd']]
+                </div>
+
+                <div style="margin-top: -15pt;">
+                    <!-- Filter Courses Input -->
+                    <form class="form-inline">
+                        <input type="text" class="form-control" ng-model="filterEvents" placeholder="Filter event" style="width: 100%">
+                    </form><!-- Filter Courses Input End -->
+                </div>
+
                 <ul class="list-group">
-                    <div ng-repeat="event in events | orderBy: 'startdate'">
+                    <div ng-repeat="event in events | orderBy: 'start_datetime' | filter: filterEvents">
 
-                        <div ng-if="$index % 2 == 0">
-                            <li class="list-group-item list-group-item-warning" style="color: black;">
+
+                            <div class="well">
                                 <div ng-if="event.teacher == 'Tobias Andersson-Gidlund'" align="center">
                                     <img style="width: 25pt; height: 25pt;" src="http://orig07.deviantart.net/49e8/f/2010/331/1/2/darth_vader_icon_256x256_by_geo_almighty-d33pmyi.png">
                                 </div>
-                                <div align="center"><h3>[[ event.name_en ]]</h3></div>
-
-                                <div align="center"><h3>[[ event.startdate ]] / [[event.starttime]]-[[event.endtime]]</h3></div>
-                                <div style="width: 100%;" ng-if="event.room.length < 2">Room: Not available</div>
-                                <div style="width: 100%;" ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
-
-                                <div style="width: 100%;" ng-if="event.teacher.length < 2">Teacher: Not available</div>
-                                <div style="width: 100%;" ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
-
-
-                                <div style="width: 100%;" ng-if="event.info.length < 2">Info: Not available</div>
-                                <div style="width: 100%;" ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
-
-                                <div style="width: 100%;" ng-if="event.desc.length < 2">Description: Not available</div>
-
-                                <div class="row" style="width: 100%; margin: 0px" ng-if="event.desc.length >= 2">Description: [[ event.desc ]]</div>
-                            </li>
-                        </div>
-                        <div ng-if="$index % 2 != 0">
-                            <li class="list-group-item" style="max-width: 100%; color: black;">
-                                <div ng-if="event.teacher == 'Tobias Andersson-Gidlund'" align="center">
-                                    <img style="width: 25pt; height: 25pt;" src="http://orig07.deviantart.net/49e8/f/2010/331/1/2/darth_vader_icon_256x256_by_geo_almighty-d33pmyi.png">
+                                <div class="row" align="center" style="margin-top: -10pt;">
+                                    <h3>[[ event.name_en ]]</h3>
                                 </div>
-                                <div align="center"><h3>[[ event.name_en ]]</h3></div>
 
-                                <div align="center"><h3>[[ event.startdate ]] / [[event.starttime]]-[[event.endtime]]</h3></div>
-                                <div style="width: 100%;" ng-if="event.room.length < 2">Room: Not available</div>
-                                <div style="width: 100%;" ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
+                                <div class="row">
 
-                                <div style="width: 100%;" ng-if="event.teacher.length < 2">Teacher: Not available</div>
-                                <div style="width: 100%;" ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
+                                    <div class="col-xs-8 col-sm-6 col-md-6 col-lg-6" align="left">
+                                        <div class="row">
+                                            <div ng-if="event.room.length < 2">Room: Not available</div>
+                                            <div ng-if="event.room.length >= 2">Room: [[ event.room ]]</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div ng-if="event.teacher.length < 2">Teacher: Not available</div>
+                                            <div ng-if="event.teacher.length >= 2">Teacher: [[ event.teacher ]]</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div ng-if="event.info.length < 2">Info: Not available</div>
+                                            <div ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
+                                        </div>
+
+                                        <div class="row">
+                                            <div ng-if="event.desc.length < 2">Desc: Not available</div>
+                                            <div ng-if="event.desc.length >= 2">Desc: [[ event.desc ]]</div>
+                                        </div>
+                                    </div>
 
 
-                       Platsens historia - miljö och minne         <div style="width: 100%;" ng-if="event.info.length < 2">Info: Not available</div>
-                                <div style="width: 100%;" ng-if="event.info.length >= 2">Info: [[ event.info ]]</div>
+                                    <div class="col-xs-4 col-sm-6 col-md-6 col-lg-6" align="right">
+                                        <div class="row">
+                                            [[event.day]]
+                                        </div>
+                                        <div class="row">
+                                            [[event.starttime]]-[[event.endtime]]
+                                        </div>
+                                        <div class="row">
+                                            [[event.startdate]]
+                                        </div>
+                                    </div>
 
-                                <div style="width: 100%;" ng-if="event.desc.length < 2">Description: Not available</div>
-                                <div style="width: 100%;" ng-if="event.desc.length >= 2">Description: [[ event.desc ]]</div>
+                                </div>
 
-                            </li>
-                        </div>
+
+                            </div>
+
 
                     </div>
                 </ul>
@@ -257,6 +274,8 @@
 <script>
     $('#alert_message').hide();
 
+    $('#date_today').hide();
+
     var openAlertMessage = function() {
         $('#alert_message').show();
     };
@@ -278,6 +297,11 @@
                 .css('overflow', 'scroll')
                 .css('overflow-x', 'hidden');
     });
+
+    var datetime = new Date().toLocaleString();
+    //var datetime_str = datetime.getMonth()+datetime.getDay();
+    //console.log(datetime);
+
 
 </script>
 
