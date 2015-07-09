@@ -180,7 +180,8 @@
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="myModalLabel">[[ course_info.course_code ]]</h4>
               </div>
-              <div class="modal-body" align="center">
+              <div class="modal-body" align="center" id="course_info_body">
+
                   <h4>[[ course_info.name_en ]]</h4>
                   <h4>[[ course_info.name_sv ]]</h4>
                   <h4>[[ course_info.course_points ]]</h4>
@@ -188,13 +189,43 @@
                   <h4><a href="[[ course_info.syllabus_en ]]">Syllabus SV</a></h4>
                   <h4><a href="[[ course_info.syllabus_sv ]]">Syllabus EN</a></h4>
                   <h4><a href="[[ course_info.url ]]">Course page</a></h4>
-
               </div>
 
-                      <div class="modal-footer">
-                          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                          <button ng-click="removeCourse(course_info)" type="button" class="btn btn-danger">Delete</button>
-                      </div>
+              <div class="modal-footer" id="course_info_footer">
+                  <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                  <!--<button ng-click="removeCourse(course_info)" type="button" class="btn btn-danger">Delete</button>-->
+                  <button onclick="hide_course_info_and_show_course_rate()" type="button" class="btn btn-danger">Delete</button>
+              </div>
+
+                <div class="modal-body" id="course_rate_form">
+
+                    <form id="ratingform" align="center">
+                        <div align="center"><h3>Please rate the course:</h3></div>
+                        <label for="sel1">Rating:</label>
+                        <select class="form-control" id="sel1" ng-model="rateIn">
+
+                            <option value="10">10 <- Very good</option>
+                            <option value="9">9</option>
+                            <option value="8">8</option>
+                            <option value="7">7</option>
+                            <option value="6">6</option>
+                            <option value="5">5</option>
+                            <option value="4">4</option>
+                            <option value="3">3</option>
+                            <option value="2">2</option>
+                            <option value="1">1 <- Very bad</option>
+
+                        </select>
+                        <label for="sel2">Note:</label>
+                        <textarea class="form-control" id="sel2" rows="3" ng-model="textIn"></textarea>
+                    </form>
+                </div>
+
+                <div class="modal-footer" id="course_rate_footer">
+                    <button type="button" onclick="back_to_info()" class="btn btn-primary">Backto info</button>
+                    <button type="button" ng-click="removeCourse(course_info)" onclick="back_to_info()" class="btn btn-danger" data-dismiss="modal">Skip</button>
+                    <button type="buttin" ng-click="rateCourse([[course]], [[ course_info.course_code ]], [[rateIn]], [[textIn]])" onclick="closeCourseModal()" class="btn btn-success">Send</button>
+                </div>
 
             </div>
           </div>
@@ -276,9 +307,33 @@
 
     $('#date_today').hide();
 
+    $('#course_rate_form').hide();
+    $('#course_rate_footer').hide();
+
+    var hide_course_info_and_show_course_rate = function(){
+        $('#course_rate_form').show();
+        $('#course_rate_footer').show();
+        $('#course_info_body').hide();
+        $('#course_info_footer').hide();
+    };
+
+    var back_to_info = function(){
+        $('#course_rate_form').hide();
+        $('#course_rate_footer').hide();
+        $('#course_info_body').show();
+        $('#course_info_footer').show();
+    };
+
     var openAlertMessage = function() {
         $('#alert_message').show();
     };
+
+    var closeCourseModal = function(){
+        $('#courseModal').modal('toggle');
+        $('#sel2').val("");
+        $('#sel1').val(5);
+
+    }
 
     var closeAlertMessage = function() {
 

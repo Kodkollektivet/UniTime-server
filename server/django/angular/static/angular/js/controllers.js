@@ -154,6 +154,35 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
             });
     };
 
+    $scope.rateCourse = function(course, course_code, course_rate, notes){
+        $('#ajaxloader').show();
+
+        $http({
+            url: '/api/rate/',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            method: "POST",
+            dataType: 'json',
+            async: false,
+            transformRequest: function(obj) {
+                var str = [];
+                for(var p in obj)
+                    str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
+                return str.join("&");
+            },
+            data: {course_code: course_code, course_rate: course_rate, notes: notes}
+        })
+            .then(function(response) {
+                $('#ajaxloader').hide();
+                $scope.removeCourse(course);
+                console.log(response.data);
+            },
+            function(response) { // optional
+                // ERROR
+                $('#ajaxloader').hide();
+                console.log(response);
+            });
+    };
+
     // Calling init method
     $scope.init();
 

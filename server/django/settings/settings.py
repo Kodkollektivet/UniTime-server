@@ -45,6 +45,7 @@ INSTALLED_APPS = (
     
     'timeedit',
     'angular',
+    'courserate',
 )
 
 MIDDLEWARE_CLASSES = (
