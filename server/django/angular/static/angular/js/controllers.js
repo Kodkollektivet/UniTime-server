@@ -138,7 +138,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
                     var t = response.data[i]['starttime'].split(':');
                     var date = new Date(d[0], d[1], d[2], t[0], t[1]);
                     var date_now = new Date();
-                    console.log(date_now);
+                    //console.log(date_now);
                     response.data[i]['start_datetime'] = date;
                     response.data[i]['day'] = moment(response.data[i]['startdate']).format('dddd');
                     //response.data[i]['until'] = (date-date_now)/(24*3600*1000);
@@ -148,15 +148,17 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
                 }
                 $('#ajaxloader').hide();
                 $('#date_today').show();
+                $('#filterCoursesForm').show();
             },
             function(response) { // optional
                 // ERROR
             });
     };
 
-    $scope.rateCourse = function(course, course_code, course_rate, notes){
+    $scope.rateCourse = function(courseIn, course_code, course_rate, notes){
         $('#ajaxloader').show();
-
+        $scope.removeCourse(courseIn);
+        console.log(courseIn);
         $http({
             url: '/api/rate/',
             headers: {'Content-Type': 'application/x-www-form-urlencoded'},
@@ -173,7 +175,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         })
             .then(function(response) {
                 $('#ajaxloader').hide();
-                $scope.removeCourse(course);
+
                 console.log(response.data);
             },
             function(response) { // optional
