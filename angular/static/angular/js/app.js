@@ -28,5 +28,4 @@ angular.module('unitime', [
 
 
         //$locationProvider.html5Mode(false).hashPrefix('!');
-
 });

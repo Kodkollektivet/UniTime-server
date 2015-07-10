@@ -19,6 +19,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
         return moment.utc(moment(start_datetime).diff(moment(now))).format("mm")
     };
 
+
     // Init method
     $scope.init = function(){
         $scope.selected_courses = $cookies.getObject("courses");
