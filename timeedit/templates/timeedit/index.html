@@ -1,0 +1,224 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head lang="en">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}UniTime{% endblock title %}</title>
+    <script src="{% static 'timeedit/js/jquery.2.1.3.min.js' %}"></script>
+    <script src="{% static 'timeedit/js/bootstrap.min.js' %}"></script>
+    <script src="{% static 'timeedit/js/jquery-ui.min.js' %}"></script>
+    <!--<script type="text/javascript" src="http://xregexp.com/xregexp.js"></script>-->
+    <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/jquery-ui.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'timeedit/css/core.css' %}">
+    <link href='http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz:700' rel='stylesheet' type='text/css'>
+    </head>
+<body>
+<div>
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-62697505-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+<!-- Header UniTime -->
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" align="center">
+            <div id="betatext"><h3>BETA</h3></div>
+            <div id="header">UniTime</div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="search" align="center">
+            {% if message %}
+                <div class="row" id="headertexterror">
+                    {{ message }}
+                </div>
+            {% else %}
+                <div class="row" id="headertext">
+                    Search for your course
+                </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12" align="center">
+            <!-- -->
+        </div>
+    </div>
+
+
+    <script>
+        $(function() {
+            var availableTags = [];
+            $.ajax({
+                url: "{% url 'course' %}",
+                type: "GET",
+                dataType: "json",
+                success: function (json) {
+                    for (i = 0 ; i < json.length ; i++) {
+                        availableTags.push(json[i]['course_code']);
+                    };
+                }
+            }),
+            $( "#id_course" ).autocomplete({
+                source: availableTags,
+                minLength: 2
+            });
+            return false;
+        });
+  </script>
+
+    <form method="post" name="form" action="">
+
+        {% csrf_token %}
+
+        <div class="row inputrow">
+            <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4" align="center"></div>
+            <div class="col-xs-10 col-sm-10 col-md-4 col-lg-4" align="center">
+                {{ form.course }}
+            </div>
+            <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4" align="center"></div>
+        </div>
+
+        <div class="row buttonrow">
+            <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4" align="center"></div>
+
+            <div class="col-xs-3 col-sm-3 col-md-1 col-lg-1" align="center">
+                <button class="btn btn-lg btn-primary" type="button" data-toggle="modal" data-target="#myModal">
+                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="col-xs-7 col-sm-7 col-md-3 col-lg-3" align="center">
+                <button class="btn btn-lg btn-success" type="submit">
+                    <span class="glyphicon glyphicon-search" aria-hidden="true"></span>
+                </button>
+            </div>
+
+            <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4" align="center"></div>
+        </div>
+
+    </form>
+</div>
+
+
+<!-- Events -->
+
+<div class="events">
+{% if course %}
+    <div class="row">
+        <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
+        <div class="col-xs-10 col-sm-10 col-md-4 col-lg-4" align="center">
+            <div class="well">
+              <div id="modalheader">{{ course.name_en }}</div><br>
+	      <div id="modalheader">{{ course.course_code }}</div><br>
+                <a href="{{ course.url }}">Link to course page</a><br>
+                <a href="{{ course.syllabus_en }}">Link to syllabus</a>
+
+                    <span class="glyphicon glyphicon-question-sign" aria-hidden="true" type="button" data-toggle="modal" data-target="#syllabusModal" style="color: rgb(178, 34, 34);"></span>
+
+            </div>
+        </div>
+        <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
+    </div>
+{% endif %}
+
+{% if events %}
+{% for e in events %}
+<div class="row">
+    <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
+
+    <div class="col-xs-10 col-sm-10 col-md-4 col-lg-4" align="center">
+        <div class="well">
+            <div id="modalheader">
+            {{ e.info }}
+            </div>
+            <br>
+            <div id="modaltext">
+            {{ e.startdate }}
+            </div>
+            <br>
+            <div id="modaltext">
+            {{ e.starttime }} - {{ e.endtime }}
+            </div>
+            </br>
+            <div id="modaltext">
+            {{ e.room }}
+            </div>
+            <br>
+            <div id="modaltext">
+            {{ e.teacher }}
+            </div>
+            <br>
+        </div>
+    </div>
+
+    <div class="col-xs-1 col-sm-1 col-md-4 col-lg-4"></div>
+</div>
+{% endfor %}
+{% endif %}
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" align="center">
+            <div id="modalheader">
+                UniTime
+                <div>
+        </h4>
+      </div>
+      <div class="modal-body" align="center">
+        <div id="modaltext">
+            UniTime is a tool for searching for your course schedule.<br>
+            Enter your course code and click on the search button.<br>
+            Cousers codes look like this: 1DV008, 1MA162.<br>
+            <br>
+            <br>
+            / UniTime team
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="syllabusModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title" id="myModalLabel" align="center">
+            <div id="modalheader">
+                UniTime
+                <div>
+        </h4>
+      </div>
+      <div class="modal-body" align="center">
+        <div>
+            Why is this important?<br>
+            The syllabus is the legal planning of a course.<br>
+            It is important the you know what you are expected to learn in a course.<br>
+            If you do not feel that a course is following the syllabus, take contact with a person responsible for the course.
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

@@ -1,6 +1,7 @@
 httplib2
-django
+Django==1.8
 requests
 virtualenv
 virtualenvwrapper
 django-ipware
+django_compressor

@@ -1,0 +1,108 @@
+
+body {
+    background-image: url("/static/timeedit/img/background.png");
+}
+
+.search{
+    margin-top: 10px;
+    background-image: url("/static/timeedit/img/background.png");
+
+}
+
+.well{
+    /*background-image: url("/static/timeedit/img/background.png");*/
+    border: 2px solid #333;
+    background-color: #EAE5D0;
+}
+
+#header{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 50pt;
+}
+#headertext{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 25pt;
+    color: #333;
+}
+
+#headertexterror{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 20pt;
+    color: darkred;
+}
+#modalheader{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 20pt;
+    color: #333;
+}
+#modaltext{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    font-size: 15pt;
+    color: #333;
+}
+#searchbutton{
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    color: #333;
+    font-size: 100%;
+}
+
+.btn{
+    width: 100%;
+}
+
+.buttonrow{
+    margin-top: 20px;
+}
+
+.inputrow {
+    margin-top: 20px;
+}
+
+
+#id_course{
+    width: 100%;
+}
+
+.events {
+    margin-top: 20pt;
+}
+
+#betatext{
+    margin-right: -90pt;
+    margin-bottom: -35pt;
+    font-family: 'Yanone Kaffeesatz', sans-serif;
+    color: firebrick;
+}
+
+#id_course{
+    font-family: "Yanone Kaffeesatz", sans-serif;
+    font-size: 25px;
+    background-color: #EAE5D0;
+}
+
+
+.ui-menu .ui-menu-item a.ui-corner-all:hover, .ui-menu .ui-menu-item a.ui-corner-all:focus, .ui-menu .ui-menu-item a.ui-corner-all:active {
+    background: #C8B081 !important;
+    color:#000;
+    border-radius:0;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    background: #C8B081;
+    border: none;
+    color:#000;
+    border-radius:0;
+    font-weight: normal;
+}
+
+.btn-primary {
+    color: #000;
+    background-color: #4E7598;
+    border-color: #4A78A1;
+}
+
+.btn-success {
+    color: #000;
+    background-color: #56A856;
+    border-color: #63A763;
+}
