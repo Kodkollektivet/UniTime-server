@@ -126,7 +126,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
 STATIC_URL = '/static/'
-STATIC_ROOT = '/var/www/static/'
+STATIC_ROOT = 'static/'
 
 # Crispyforms settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
