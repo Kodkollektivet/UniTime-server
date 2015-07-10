@@ -100,7 +100,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'unitime',
         'USER': 'unitime',
-        'PASSWORD': '',
+        'PASSWORD': 'EA892DB71728C3E29ACC0BD16A3BC21670C16998F0A13AE6C042D83C8B1F3780',
         'HOST': 'localhost',
         'PORT': '',                      # Set to empty string for default.
     }
