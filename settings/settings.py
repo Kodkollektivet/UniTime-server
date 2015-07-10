@@ -97,8 +97,12 @@ WSGI_APPLICATION = 'settings.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'unitime',
+        'USER': 'unitime',
+        'PASSWORD': '',
+        'HOST': 'localhost',
+        'PORT': '',                      # Set to empty string for default.
     }
 }
 
@@ -141,7 +145,7 @@ LOGGING = {
         'default': {
             'level' : 'INFO',
             'class' : 'logging.handlers.RotatingFileHandler',
-            'filename' : '/var/log/unitime/debug.log',
+            'filename' : 'log/debug.log',
             'maxBytes' : 1024 * 1024 * 5, # 5BM
             'backupCount' : 5,
             'formatter' : 'standard',
@@ -150,7 +154,7 @@ LOGGING = {
         'request_handler': {
             'level' : 'DEBUG',
             'class' : 'logging.handlers.RotatingFileHandler',
-            'filename' : '/var/log/unitime/requests.log',
+            'filename' : 'log/requests.log',
             'maxBytes' : 1024 * 1024 * 5, # 5MB
             'backupCount' : 5,
             'formatter': 'standard'
@@ -159,7 +163,7 @@ LOGGING = {
         'search_handler': {
             'level' : 'INFO',
             'class' : 'logging.handlers.RotatingFileHandler',
-            'filename' : '/var/log/unitime/search.log',
+            'filename' : 'log/search.log',
             'maxBytes' : 1024 * 1024 * 5, # 5MB
             'backupCount' : 5,
             'formatter': 'standard'
@@ -168,7 +172,7 @@ LOGGING = {
         'error_Handler' : {
             'level' : 'DEBUG',
             'class' : 'logging.handlers.RotatingFileHandler',
-            'filename' : '/var/log/unitime/mismatch.log',
+            'filename' : 'log/mismatch.log',
             'maxBytes' : 1024 * 1024 * 5, # 5MB
             'backupCount' : 5,
             'formatter': 'standard'
