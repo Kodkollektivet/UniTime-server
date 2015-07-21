@@ -42,13 +42,17 @@ INSTALLED_APPS = (
 
     # Third party
     'compressor',
-    
+
+    # CORS (Cross-Origin Resource Sharing)
+    'corsheaders',
+
     'timeedit',
     'angular',
     'courserate',
 )
 
 MIDDLEWARE_CLASSES = (
+    'corsheaders.middleware.CorsMiddleware',  # courseheaders middleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -57,6 +61,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.security.SecurityMiddleware',
+
 )
 
 
@@ -130,6 +135,9 @@ STATIC_ROOT = 'static/'
 
 # Crispyforms settings
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
+
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 LOGGING = {
