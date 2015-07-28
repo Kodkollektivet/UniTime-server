@@ -1,22 +1,18 @@
-
-# This file us used to find courses from LNU page and add them to database
+# -*- coding: utf-8 -*-
+# This file us used to find courses from LNU page and send POST requests to the API
 # It is only the course code that is saved.
 # This script can be a starting point to a service that is searching for course info all the time.
+# At the time of writing this, we find around 4854 courses
+# This takes about 80 minutes to request this courses
+# This script will run every week.
 
-import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "settings.settings")
-
-import httplib
 import requests
 import re
 import json
-
-from timeedit.models import CourseCodes
-
-from django.db.utils import IntegrityError
-
+import time
 
 def getAllCourseCodes_scrapper(urls):
+
     for url in urls:
 
         req = requests.get(url)                                # the request
@@ -25,21 +21,10 @@ def getAllCourseCodes_scrapper(urls):
         all_courses = map(lambda x:x.strip('()'), all_courses) # strip away all of the ()
 
         for i in all_courses:
-            try:
-                course = CourseCodes(code=i.upper())
-                course.save()
-                print(str(i)+' saved')
-
-            except TypeError:
-                print('TypeError')
-
-            except IntegrityError as e:
-                print(e)
-                pass
-
-            except UnicodeEncodeError as e:
-                print(e)
-                pass
+            data = {'course':i}
+            req = requests.post('http://unitime.se/api/course/', data=data)
+            print(req.status_code)
+            time.sleep(1)
 
 urls = [
     'http://lnu.se/utbildning/kurser',
@@ -60,21 +45,9 @@ def getFromSomeAPI():
     data = r.json()
 
     for i in data['d']:
-        try:
-            course = CourseCodes(code=i.upper())
-            course.save()
-            print(str(i)+' saved')
-
-        except TypeError:
-            print('TypeError')
-
-        except IntegrityError as e:
-            print(e)
-            pass
-
-        except UnicodeEncodeError as e:
-            print(e)
-            pass
-
+        data = {'course':i}
+        req = requests.post('http://unitime.se/api/course/', data=data)
+        print(req.status_code)
+        time.sleep(1)
 
 getFromSomeAPI()
