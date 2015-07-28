@@ -2,7 +2,7 @@
 from django.conf.urls import include, url
 from django.contrib import admin
 
-from timeedit.views import IndexView, CourseView, EventView
+from timeedit.views import IndexView, CourseView, EventView, AddCourseCodeView
 from timeedit.views import course_by_code, events_by_code
 from angular.views import IndexTemplateView
 
@@ -21,6 +21,9 @@ urlpatterns = [
     url(r'^api/event/(?P<course_code_in>[\w-]+)/$', events_by_code , name='events_by_code'),
 
     url(r'^api/rate/$', CourseRateView.as_view(), name='rate'),
+
+    # This endpoint just adds a course code, its used to later call for new courses.
+    url(r'^api/course_codes/$', AddCourseCodeView.as_view(), name='add_course_code'),
     
     url(r'^admin/', include(admin.site.urls)),
 ]

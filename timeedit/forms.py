@@ -24,3 +24,9 @@ class CourseForm(forms.Form):
             ),
         ]
     )
+
+class CourseCodeForm(forms.Form):
+    code = forms.CharField(
+        min_length=4,
+        max_length=7
+    )

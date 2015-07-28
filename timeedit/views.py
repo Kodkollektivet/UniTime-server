@@ -15,12 +15,13 @@ from django.utils.decorators import method_decorator
 
 # Exceptions
 from django.core.exceptions import *
+from django.db import IntegrityError
 
 
 from ipware.ip import get_ip
 
-from .models import Course, Event
-from .forms import EventForm, CourseForm
+from .models import Course, Event, CourseCodes
+from .forms import EventForm, CourseForm, CourseCodeForm
 from .api.timeedit_handler import getCourseEvents, getCourseId, getCourseInfo
 
 
@@ -590,3 +591,49 @@ def allCoursesInJSON(request):
     return HttpResponse(json.dumps(serializers.serialize('json', Course.objects.all())), content_type='application/json')
 
 
+
+class AddCourseCodeView(generic.View):
+
+    '''
+    This endpoints is only for collecting course codes
+    '''
+    @method_decorator(csrf_exempt)
+    def dispatch(self, request, *args, **kwargs):
+        return super(AddCourseCodeView, self).dispatch(request, *args, **kwargs)
+
+    '''
+    When POST here, only the specific course info will be sen
+    '''
+    def post(self, request, *args, **kwargs):
+
+        # Create new form and pass in post info.
+        form = CourseCodeForm(request.POST)
+
+        # If form is valid
+        if form.is_valid():
+            # variable with cleaned data from the form
+            course_code = form.cleaned_data['code'].upper()
+
+            try:
+                code = CourseCodes(code=course_code)
+                code.save()
+                return HttpResponse(json.dumps({'status':'ok'}), content_type='application/json')
+
+            except KeyError as e:
+                print(e)
+                return HttpResponse(json.dumps({'status': 'wrong'}), content_type='application/json')
+
+
+            except IntegrityError as e:
+                print(e)
+                return HttpResponse(json.dumps({'status': 'already added'}), content_type='application/json')
+
+        else:
+            return HttpResponse(json.dumps({'status': 'form errors'}), content_type='application/json')
+
+    '''
+    This GET returns ALL course codes!
+    '''
+    def get(self, request, *args, **kwargs):
+        # Returns all of the course codes.
+        return HttpResponse(json.dumps([{'code':c.code} for c in CourseCodes.objects.all()]), content_type='application/json')
