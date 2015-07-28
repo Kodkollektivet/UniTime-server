@@ -182,12 +182,17 @@ def getCourseInfo(course_id):
         data = json.dumps(data['records'])
 
         data = json.loads(data)
-        pp.pprint(data)
+        #pp.pprint(data)
         data = data[0]['fields']
         data = data
         #pp.pprint(data)
         defaultLogger.info('Success!')
         defaultLogger.info(' ')
+
+        try:
+            url = data[8]['values'][0]
+        except IndexError:
+            url = ''
 
         return {
             'name_sv':data[1]['values'][0],
@@ -202,7 +207,7 @@ def getCourseInfo(course_id):
             'course_reg':data[6]['values'][0][5:],
             'course_speed': data[4]['values'][0],
             'semester': __THIS_SEMESTER,
-            'url': data[8]['values'][0],
+            'url': url,
             'year':__THIS_YEAR
         }
             
