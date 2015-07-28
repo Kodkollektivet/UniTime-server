@@ -14,17 +14,16 @@ import time
 def getAllCourseCodes_scrapper(urls):
 
     for url in urls:
-
         req = requests.get(url)                                # the request
         match_code = re.compile(r'\(\d...\d.\)', re.M|re.I)   # the regexp
         all_courses = match_code.findall(req.text)             # find all of the course_anmalningskod
         all_courses = map(lambda x:x.strip('()'), all_courses) # strip away all of the ()
 
         for i in all_courses:
-            data = {'course':i}
-            req = requests.post('http://unitime.se/api/course/', data=data)
+            data = {'code':i}
+            req = requests.post('http://unitime.se/api/course_codes/', data=data)
             print(req.status_code)
-            time.sleep(1)
+
 
 urls = [
     'http://lnu.se/utbildning/kurser',
@@ -45,9 +44,22 @@ def getFromSomeAPI():
     data = r.json()
 
     for i in data['d']:
-        data = {'course':i}
+        data = {'code':i}
+        req = requests.post('http://unitime.se/api/course_codes/', data=data)
+        print(req.status_code)
+
+
+getFromSomeAPI()
+
+
+def requestCourseInfo():
+    req = requests.get('http://unitime.se/api/course_codes/')
+    for i in req.json():
+        data = {'course':i['code']}
         req = requests.post('http://unitime.se/api/course/', data=data)
         print(req.status_code)
         time.sleep(1)
 
-getFromSomeAPI()
+requestCourseInfo()
+
+
