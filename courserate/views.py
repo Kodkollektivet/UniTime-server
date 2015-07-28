@@ -2,7 +2,7 @@
 
 import json
 
-from django.shortcuts import render
+
 from django.views import generic
 from django.http import HttpResponse
 
@@ -12,6 +12,7 @@ from django.utils.decorators import method_decorator
 
 # Exceptions
 from django.db import IntegrityError
+from django.utils.datastructures import MultiValueDictKeyError
 
 from ipware.ip import get_ip
 
@@ -43,8 +44,10 @@ class CourseRateView(generic.View):
                 )
             rate.save()
             return HttpResponse(json.dumps({'message': 'success'}), content_type='application/json', status=201)
-        except IOError as e:
+
+        except MultiValueDictKeyError as e:
             print(e)
+            return HttpResponse(json.dumps({'message': 'form errors'}), content_type='application/json', status=404)
 
         except IntegrityError as e:
             print(e)
