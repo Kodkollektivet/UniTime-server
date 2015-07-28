@@ -22,7 +22,6 @@ def getAllCourseCodes_scrapper(urls):
         for i in all_courses:
             data = {'code':i}
             req = requests.post('http://unitime.se/api/course_codes/', data=data)
-            print(req.status_code)
 
 
 urls = [
@@ -46,7 +45,6 @@ def getFromSomeAPI():
     for i in data['d']:
         data = {'code':i}
         req = requests.post('http://unitime.se/api/course_codes/', data=data)
-        print(req.status_code)
 
 
 getFromSomeAPI()
@@ -57,7 +55,6 @@ def requestCourseInfo():
     for i in req.json():
         data = {'course':i['code']}
         req = requests.post('http://unitime.se/api/course/', data=data)
-        print(req.status_code)
         time.sleep(1)
 
 requestCourseInfo()
