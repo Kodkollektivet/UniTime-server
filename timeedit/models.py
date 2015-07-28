@@ -1,6 +1,15 @@
 from django.db import models
 
-class Course(models.Model):
+class TimeStampedModel(models.Model):
+    created = models.DateTimeField(auto_now_add=True)
+    modified = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        abstract = True
+        get_latest_by = 'modified'
+        ordering = ('-modified', '-created')
+
+class Course(TimeStampedModel):
 
     name_en = models.CharField(max_length=254, blank=True)  # The name of the course
     name_sv = models.CharField(max_length=254, blank=True)  # The name of the course
@@ -26,7 +35,7 @@ class Course(models.Model):
     def __unicode__(self):
         return self.course_code
 
-class Event(models.Model):
+class Event(TimeStampedModel):
     
     date = models.DateField()
     start_time = models.CharField(max_length = 20)
@@ -39,7 +48,7 @@ class Event(models.Model):
     def __unicode__(self):
         return self.info
 
-class CourseCodes(models.Model):
+class CourseCodes(TimeStampedModel):
 
     code = models.CharField(max_length=10, unique=True)
 
