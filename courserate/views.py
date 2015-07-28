@@ -1,20 +1,16 @@
 # -*- coding:utf-8 -*-
 
 import json
-import logging
 
 from django.shortcuts import render
 from django.views import generic
 from django.http import HttpResponse
-from django.core import serializers
-from django.views.generic import TemplateView
 
 # Decorators
 from django.views.decorators.csrf import csrf_exempt
 from django.utils.decorators import method_decorator
 
 # Exceptions
-from django.core.exceptions import *
 from django.db import IntegrityError
 
 from ipware.ip import get_ip
@@ -46,13 +42,16 @@ class CourseRateView(generic.View):
                 ip = get_ip(request),
                 )
             rate.save()
-            return HttpResponse(json.dumps({'message': 'okey'}), content_type='application/json')
+            return HttpResponse(json.dumps({'message': 'success'}), content_type='application/json', status=201)
         except IOError as e:
             print(e)
 
         except IntegrityError as e:
             print(e)
-            return HttpResponse(json.dumps({'message': 'Cant rate a course more than 1 time.'}), content_type='application/json')
+            return HttpResponse(json.dumps({'message': 'Cant rate a course more than 1 time.'}), content_type='application/json', status=403)
+
+        return HttpResponse(json.dumps({'message': 'Something is wrong'}), content_type='application/json', status=400)
+
 
 
 
