@@ -24,7 +24,7 @@ __MONTH_NOW = int(datetime.datetime.now().strftime('%m'))
 __WEEK_NOW = datetime.datetime.now().isocalendar()[1] # Not used
 
 # Evaluate if now() is HT or VT
-if (__MONTH_NOW <= 8):
+if (__MONTH_NOW <= 7):
     __THIS_SEMESTER = 'VT'
 else:
     __THIS_SEMESTER = 'HT'
