@@ -6,6 +6,7 @@
 # This takes about 80 minutes to request this courses
 # This script will run every week.
 
+import datetime
 import requests
 import re
 import json
@@ -59,4 +60,4 @@ def requestCourseInfo():
 
 requestCourseInfo()
 
-
+print "Updated courses on %s", datetime.date.today.ctime()
