@@ -7,9 +7,13 @@ from django.core.validators import RegexValidator
 
 # Form for searching
 class EventForm(forms.Form):
-    event = forms.CharField(
+    course = forms.CharField(
         min_length=4, 
         max_length=7
+    )
+    location = forms.CharField(
+        min_length=1,
+        max_length=10
     )
     
 class CourseForm(forms.Form):

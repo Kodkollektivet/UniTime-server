@@ -27,7 +27,7 @@ class Course(TimeStampedModel):
     year = models.CharField(max_length = 3) 
 
     def __eq__(self, other):
-        if self.course_code == other.course_code:
+        if self.course_code == other.course_code and self.course_location == other.course_location:
             return True
         else:
             return False

@@ -56,7 +56,7 @@ def getCourseEvents(season, year, course_anmalningskod, course_code, name_en, na
         
         # Create the request
         connection.request('GET', url, {}, header)
-        defaultLogger.info('Succes!')
+        defaultLogger.info('Success!')
         defaultLogger.info(' ')
         
         # Read the json data and create a python dict

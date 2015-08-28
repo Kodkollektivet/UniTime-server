@@ -23,6 +23,7 @@ from ipware.ip import get_ip
 from .models import Course, Event, CourseCodes
 from .forms import EventForm, CourseForm, CourseCodeForm
 from .api.timeedit_handler import getCourseEvents, getCourseId, getCourseInfo
+from django.db.models import Q
 
 
 def createJsonCourse(listIn):
@@ -227,6 +228,7 @@ class CourseView(generic.View):
                 'course_code': course.course_code,
                 'name_en': course.name_en,
                 'name_sv': course.name_sv,
+                'location': course.course_location,
             }
 
             course_list.append(data)
@@ -396,7 +398,7 @@ class EventView(generic.View):
     def post(self, request, *args, **kwargs):
 
         # Create new form and pass in post info.
-        form = CourseForm(request.POST)
+        form = EventForm(request.POST)
         #print(request.POST)
         
         searchLogger = logging.getLogger('searchLogger')
@@ -407,6 +409,7 @@ class EventView(generic.View):
 
             # variable with cleaned data from the form
             course_post = form.cleaned_data['course'].upper()
+            course_post_location = form.cleaned_data['location']
             
             # Logs a valid post before it reaches api_handler
             searchLogger.info('Search Term: %s  IP Addr: %s' % (course_post, ip))
@@ -430,8 +433,10 @@ class EventView(generic.View):
 
             # If there is mulit course objects in the database
             except MultipleObjectsReturned as e:
-                courses = Course.objects.filter(course_code = course_post)
+                courses = Course.objects.filter(Q(course_code = course_post) &
+                                                Q(course_location = course_post_location))
                 course_events_list = []
+                merged_events_list = []
                 
                 for i in courses:
                     course_events_list.append(getCourseEvents(i.semester,
@@ -441,7 +446,15 @@ class EventView(generic.View):
                                                               i.name_en,
                                                               i.name_sv))
 
-                return HttpResponse(json.dumps(max(course_events_list)), content_type='application/json')
+                #merged_events_list = [element for element in course_events_list if element not in merged_events_list and len(element) > 0]
+                for i in course_events_list:
+                    for j in i:
+                        if j not in merged_events_list:
+                            print j
+                            merged_events_list.append(j)
+                print len(merged_events_list)
+
+                return HttpResponse(json.dumps(merged_events_list), content_type='application/json')
 
             # If course dont exist in the database
             except Course.DoesNotExist as e:
