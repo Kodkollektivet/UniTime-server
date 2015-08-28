@@ -38,7 +38,7 @@ def getCourseEvents(season, year, course_anmalningskod, course_code, name_en, na
     defaultLogger.info('Retrieving course events...')
     try:
         # Url string
-        url = '/web/lnu/db1/schema1/s.json?object=courseevt_%s%s-%s&tab=3' % (str(season), str(year), str(course_anmalningskod))
+        url = '/web/lnu/db1/schema2/s.json?object=courseevt_%s%s-%s&tab=3' % (str(season), str(year), str(course_anmalningskod))
         defaultLogger.info('URL: %s' % url)
         
         # HTTPS connection

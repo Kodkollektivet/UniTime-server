@@ -450,9 +450,7 @@ class EventView(generic.View):
                 for i in course_events_list:
                     for j in i:
                         if j not in merged_events_list:
-                            print j
                             merged_events_list.append(j)
-                print len(merged_events_list)
 
                 return HttpResponse(json.dumps(merged_events_list), content_type='application/json')
 
