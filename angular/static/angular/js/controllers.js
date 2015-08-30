@@ -28,7 +28,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
          }
          else{
              angular.forEach($scope.selected_courses, function(course){
-                 $scope.getEvents(course['course_code']);
+                 $scope.getEvents(course['course_code'], course['course_location']);
              });
          }
         // Get accept cookies
@@ -118,7 +118,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
     };
 
 
-    $scope.getEvents = function (course_code) {
+    $scope.getEvents = function (course_code, course_location) {
         $('#ajaxloader').show();
         $http({
             url: '/api/event/',
@@ -132,7 +132,7 @@ myAppController.controller('unicontrol', function UniControl($scope, Course, Eve
                     str.push(encodeURIComponent(p) + "=" + encodeURIComponent(obj[p]));
                 return str.join("&");
             },
-            data: {course: course_code}
+            data: {course: course_code, location: course_location}
         })
             .then(function(response) {
                 for ( var i = 0 ; i < response.data.length ; i++){
