@@ -1,6 +1,6 @@
-<h1 align=center">UniTime server</h1>
-<a href="http://unitime.se>UniTime.se</a>
-<h2>This is out "main" server in the UniTime project.</h2>
+<h1>UniTime server</h1>
+<h2>http://unitime.se (AngularJS app not maintained!)</h2>
+<h3>This is out "main" server in the UniTime project.</h3>
 <p>This server gets data from TimeEdit and publish the data with a JSON Rest API.</p>
 <p>We Rest API is consumed by a native Android app and a Ionic webapp that is developed for iOS.</p>
 <p>The server also publish a AngularJS web app.</p>
