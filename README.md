@@ -1,3 +1,6 @@
+<h1>OLD REPO!</h1>
+<h1>New repo is here: https://github.com/Kodkollektivet/unitime-api</h1>
+
 <h1>UniTime server</h1>
 <h2>http://unitime.se (AngularJS app not maintained!)</h2>
 <h3>This is out "main" server in the UniTime project.</h3>
